@@ -1,5 +1,16 @@
-.App {
-  text-align: center;
+.main-container {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-left: 2rem;
+  margin-right: 2rem;
+  margin-top: 2rem;
+}
+
+.select-container {
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .App-logo {
