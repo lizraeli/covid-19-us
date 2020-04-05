@@ -141,6 +141,7 @@ function App() {
       <div className="select-container">
         <label htmlFor="state-select">State</label>
         <Select
+          isClearable
           value={selectedState}
           options={stateOptions}
           onChange={(selected) => handleStateSelect(selected as Option)}
@@ -149,6 +150,7 @@ function App() {
         />
         <label htmlFor="county-select">County</label>
         <Select
+          isClearable
           value={selectedCounty}
           options={countyOptions}
           onChange={(selected) => setSelectedCounty(selected as Option)}
@@ -166,6 +168,7 @@ function App() {
       </div>
       {selectedState && (
         <Chart
+          
           options={chartData.options}
           series={chartData.series}
           type="bar"
