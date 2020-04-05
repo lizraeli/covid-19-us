@@ -64,18 +64,6 @@ export const getCountyDataByState = (
   return stateDictWithCountyData;
 };
 
-// export const getCountyDataByState = (
-//   countyDataRows: CountyData[] | null
-// ) => {
-//   const stateDictWithCountyData = countyDataRows
-//     ? getCountyDataByState(countyDataRows)
-//     : {};
-
-//   return stateDictWithCountyData,
-  
-// };
-
-
 export const createCountyOptions = (
   countyDataByStateDict: CountyDataByStateDict,
   selectedState: Option | null
