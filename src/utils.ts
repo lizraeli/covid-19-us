@@ -5,15 +5,27 @@ import type {
   CountyDataDict,
   CountyDataByStateDict,
   Option,
+  StateData,
+  StateDataDict,
 } from "./types";
 
-const getDataByCounty = (countiesDataRows: CountyData[]): CountyDataDict => {
-  return groupBy(countiesDataRows, (countyData) => countyData.county);
+const groupCountyDataByCounty = (
+  countyDataRows: CountyData[]
+): CountyDataDict => {
+  return groupBy(countyDataRows, (countyData) => countyData.county);
 };
 
-const getDataByState = (countiesDataRows: CountyData[]): CountyDataDict => {
-  return groupBy(countiesDataRows, (countyData) => countyData.state);
+const groupCountyDataByState = (
+  countyDataRows: CountyData[]
+): CountyDataDict => {
+  return groupBy(countyDataRows, (countyData) => countyData.state);
 };
+
+export const groupStateDataByState = (stateDataRows: StateData[]): StateDataDict => {
+  return groupBy(stateDataRows, (stateData) => stateData.state);
+};
+
+const createOption = (state: string) => ({ value: state, label: state });
 
 /**
  * Returns an object where each key is a state
@@ -33,68 +45,75 @@ const getDataByState = (countiesDataRows: CountyData[]): CountyDataDict => {
  *   },
  *   ...
  * }
- * @param countiesDataRows
+ * @param countyDataRows
  */
-const getCountyDataByState = (
-  countiesDataRows: CountyData[]
+export const getCountyDataByState = (
+  countyDataRows: CountyData[]
 ): CountyDataByStateDict => {
-  const dataByStateDict = getDataByState(countiesDataRows);
-  const CountyDataByStateDict = Object.entries(dataByStateDict).reduce(
+  const dataGroupedByState = groupCountyDataByState(countyDataRows);
+  const stateDictWithCountyData = Object.entries(dataGroupedByState).reduce(
     (dict, [state, dataRows]) => {
       return {
         ...dict,
-        [state]: getDataByCounty(dataRows),
+        [state]: groupCountyDataByCounty(dataRows),
       };
     },
     {} as CountyDataByStateDict
   );
 
-  return CountyDataByStateDict;
+  return stateDictWithCountyData;
 };
 
-const createOption = (state: string) => ({ value: state, label: state });
+// export const getCountyDataByState = (
+//   countyDataRows: CountyData[] | null
+// ) => {
+//   const stateDictWithCountyData = countyDataRows
+//     ? getCountyDataByState(countyDataRows)
+//     : {};
 
-export const processCountyDataByState = (
-  countyDataRows: CountyData[] | null
-) => {
-  const CountyDataByStateDict = countyDataRows
-    ? getCountyDataByState(countyDataRows)
-    : {};
-  const states = Object.keys(CountyDataByStateDict);
-  const stateOptions = states.map(createOption);
+//   return stateDictWithCountyData,
+  
+// };
 
-  return {
-    CountyDataByStateDict,
-    stateOptions,
-  };
-};
 
 export const createCountyOptions = (
-  CountyDataByStateDict: CountyDataByStateDict,
+  countyDataByStateDict: CountyDataByStateDict,
   selectedState: Option | null
 ) => {
-  const countyInCountyDataByStateDict = selectedState
-    ? CountyDataByStateDict[selectedState.value]
+  const countiesDataDict = selectedState
+    ? countyDataByStateDict[selectedState.value]
     : {};
-  const counties = countyInCountyDataByStateDict
-    ? Object.keys(countyInCountyDataByStateDict)
+  const counties = countiesDataDict
+    ? Object.keys(countiesDataDict)
     : [];
   const countyOptions = counties.map(createOption);
 
   return countyOptions;
 };
 
+export const createStateOptions = (
+    stateDataDict: StateDataDict | null,
+  ) => {
+    const states = stateDataDict
+      ? Object.keys(stateDataDict)
+      : [];
+    const stateOptions = states.map(createOption);
+  
+    return stateOptions;
+  };
+
 export const getSelectedCountyData = (
   CountyDataByStateDict: CountyDataByStateDict,
   selectedState: Option | null,
   selectedCounty: Option | null
 ) => {
-  const countyInCountyDataByStateDict = selectedState
+  const countyDataByStateDict = selectedState
     ? CountyDataByStateDict[selectedState.value]
     : {};
   const countyData = selectedCounty
-    ? countyInCountyDataByStateDict[selectedCounty.value]
+    ? countyDataByStateDict[selectedCounty.value]
     : [];
+
   return countyData;
 };
 

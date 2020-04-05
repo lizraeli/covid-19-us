@@ -9,6 +9,15 @@ export interface CountyData {
   deaths: number;
 }
 
+export interface StateData {
+  date: string;
+  state: string;
+  fips?: number;
+  cases: number;
+  deaths: number;
+}
+
+export type StateDataDict = Record<string, StateData[]>
 export type CountyDataDict = Record<string, CountyData[]>;
 export type CountyDataByStateDict = Record<string, CountyDataDict>;
 

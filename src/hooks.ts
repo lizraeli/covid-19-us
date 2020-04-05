@@ -4,12 +4,14 @@ import type { ParseResult } from "papaparse";
 
 import { ParseStatus } from "./constants";
 import {
-  processCountyDataByState,
+  getCountyDataByState,
   getSelectedCountyData,
+  groupStateDataByState,
   createCountyOptions,
   makeChartData,
+  createStateOptions,
 } from "./utils";
-import type { ParseState, Option, CountyData } from "./types";
+import type { ParseState, Option, CountyData, StateData } from "./types";
 
 type DataParseResult<T> = ParseResult & { data: T[] };
 
@@ -58,19 +60,24 @@ export const useProcessedCountyData = (
       ? countyParseState.data
       : null;
 
-  const { CountyDataByStateDict, stateOptions } = useMemo(
-    () => processCountyDataByState(dataRows),
+  const stateDictWithCountyData = useMemo(
+    () => (dataRows ? getCountyDataByState(dataRows) : {}),
     [dataRows]
   );
 
   const countyOptions = useMemo(
-    () => createCountyOptions(CountyDataByStateDict, selectedState),
-    [CountyDataByStateDict, selectedState]
+    () => createCountyOptions(stateDictWithCountyData, selectedState),
+    [stateDictWithCountyData, selectedState]
   );
 
   const selectedCountyDataRows = useMemo(
-    () => getSelectedCountyData(CountyDataByStateDict, selectedState, selectedCounty),
-    [CountyDataByStateDict, selectedState, selectedCounty]
+    () =>
+      getSelectedCountyData(
+        stateDictWithCountyData,
+        selectedState,
+        selectedCounty
+      ),
+    [stateDictWithCountyData, selectedState, selectedCounty]
   );
 
   const dateRows = useMemo(
@@ -83,18 +90,22 @@ export const useProcessedCountyData = (
     [selectedCountyDataRows]
   );
 
+  const newCasesRows = useMemo(() => {
+    return selectedCountyDataRows.map((countyData, index) => {
+      const isFirstElement = index === 0;
+      const prevCases = isFirstElement
+        ? 0
+        : selectedCountyDataRows[index - 1].cases;
+      const newCases = countyData.cases - prevCases;
+
+      return newCases;
+    }, []);
+  }, [selectedCountyDataRows]);
+
   const totalCasesChartData = useMemo(
     () => makeChartData(selectedCounty?.value, dateRows, casesRows),
     [dateRows, casesRows, selectedCounty]
   );
-
-  const newCasesRows = useMemo(() => {
-    return selectedCountyDataRows.map((countyData, index) => {
-      return index === 0
-        ? 0
-        : countyData.cases - selectedCountyDataRows[index - 1].cases;
-    }, []);
-  }, [selectedCountyDataRows]);
 
   const newCasesChartData = useMemo(
     () => makeChartData(selectedCounty?.value, dateRows, newCasesRows),
@@ -103,8 +114,66 @@ export const useProcessedCountyData = (
 
   return {
     selectedCountyDataRows,
-    stateOptions,
     countyOptions,
+    totalCasesChartData,
+    newCasesChartData,
+  };
+};
+
+export const useProcessedStateData = (
+  stateDataParseState: ParseState<StateData>,
+  selectedState: Option | null
+) => {
+  const dataRows =
+    stateDataParseState.status === ParseStatus.SUCCESS
+      ? stateDataParseState.data
+      : null;
+
+  const stateDataDict = dataRows ? groupStateDataByState(dataRows) : {};
+
+  const stateOptions = useMemo(() => createStateOptions(stateDataDict), [
+    stateDataDict,
+  ]);
+
+  const selectedStateDataRows = selectedState
+    ? stateDataDict[selectedState.value]
+    : [];
+
+  const dateRows = useMemo(
+    () => selectedStateDataRows.map((stateData) => stateData.date),
+    [selectedStateDataRows]
+  );
+
+  const casesRows = useMemo(
+    () => selectedStateDataRows.map((stateData) => stateData.cases),
+    [selectedStateDataRows]
+  );
+
+  const newCasesRows = useMemo(() => {
+    return selectedStateDataRows.map((stateData, index) => {
+      const isFirstElement = index === 0;
+      const prevCases = isFirstElement
+        ? 0
+        : selectedStateDataRows[index - 1].cases;
+      const newCases = stateData.cases - prevCases;
+
+      return newCases;
+    }, []);
+  }, [selectedStateDataRows]);
+
+  const totalCasesChartData = useMemo(
+    () => makeChartData(selectedState?.value, dateRows, casesRows),
+    [dateRows, casesRows, selectedState]
+  );
+
+  const newCasesChartData = useMemo(
+    () => makeChartData(selectedState?.value, dateRows, newCasesRows),
+    [dateRows, newCasesRows, selectedState]
+  );
+
+  return {
+    stateDataDict,
+    stateOptions,
     totalCasesChartData,
     newCasesChartData,
   };

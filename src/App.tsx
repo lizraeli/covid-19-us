@@ -5,10 +5,31 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import Chart from "react-apexcharts";
 
-import { ParseStatus } from "./constants";
-import { useParseCSV, useProcessedCountyData } from "./hooks";
+import { ParseStatus, US_STATES_CSV_URL } from "./constants";
+import {
+  useParseCSV,
+  useProcessedCountyData,
+  useProcessedStateData,
+} from "./hooks";
 import { US_COUNTIES_CSV_URL } from "./constants";
-import type { CountyData, Option } from "./types";
+import type { CountyData, StateData, Option, ParseState } from "./types";
+
+function getErrorFromParseStates(...parseStates: ParseState<any>[]) {
+  // const parseStateWithError = parseStates.find(parseState => parseState.status === ParseStatus.ERROR)
+  for (const parseState of parseStates) {
+    if (parseState.status === ParseStatus.ERROR) {
+      return parseState.error;
+    }
+  }
+
+  return null;
+}
+
+function isAnyParseStateActive(...parseStates: ParseState<any>[]) {
+  return parseStates.some(
+    (parseState) => parseState.status === ParseStatus.ACTIVE
+  );
+}
 
 enum ViewMode {
   TOTAL_CASES = "TOTAL_CASES",
@@ -32,19 +53,35 @@ function App() {
   const [selectedViewMode, setSelectedViewMode] = useState(viewModeOptions[0]);
 
   const {
-    parseState: countyParseState,
+    parseState: countyDataParseState,
     fetchAndParseData: fetchAndParseCountyData,
   } = useParseCSV<CountyData>(US_COUNTIES_CSV_URL);
 
   const {
-    totalCasesChartData,
-    newCasesChartData,
-    stateOptions,
+    parseState: stateDataParseState,
+    fetchAndParseData: fetchAndParseStateData,
+  } = useParseCSV<StateData>(US_STATES_CSV_URL);
+
+  const {
+    totalCasesChartData: totalCasesForCountyChartData,
+    newCasesChartData: newCasesForCountyChartData,
     countyOptions,
-  } = useProcessedCountyData(countyParseState, selectedState, selectedCounty);
+  } = useProcessedCountyData(
+    countyDataParseState,
+    selectedState,
+    selectedCounty
+  );
+
+  const {
+    stateDataDict,
+    stateOptions,
+    totalCasesChartData: totalCasesForStateChartData,
+    newCasesChartData: newCasesForStateChartData,
+  } = useProcessedStateData(stateDataParseState, selectedState);
 
   useEffect(() => {
     fetchAndParseCountyData();
+    fetchAndParseStateData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -53,17 +90,27 @@ function App() {
     setSelectedCounty(null);
   };
 
-  if (countyParseState.status === ParseStatus.ERROR) {
+  const error = getErrorFromParseStates(
+    countyDataParseState,
+    stateDataParseState
+  );
+
+  if (error) {
     return (
       <div className="App">
         <header className="App-header">
-          <div> {countyParseState.error} </div>
+          <div> {error} </div>
         </header>
       </div>
     );
   }
 
-  if (countyParseState.status === ParseStatus.ACTIVE) {
+  const isActive = isAnyParseStateActive(
+    countyDataParseState,
+    stateDataParseState
+  );
+
+  if (isActive) {
     return (
       <div className="App">
         <header className="App-header">
@@ -73,8 +120,16 @@ function App() {
       </div>
     );
   }
+  console.log("stateDataDict: ", stateDataDict);
+  /* countyParseState.status is ParseStatus.SUCCESS */
 
-  // countyParseState.status is ParseStatus.SUCCESS
+  const totalCasesChartData = selectedCounty
+    ? totalCasesForCountyChartData
+    : totalCasesForStateChartData;
+
+  const newCasesChartData = selectedCounty
+    ? newCasesForCountyChartData
+    : newCasesForStateChartData;
 
   const chartData =
     selectedViewMode.value === ViewMode.TOTAL_CASES
@@ -109,7 +164,7 @@ function App() {
           id="mode-select"
         />
       </div>
-      {selectedCounty && (
+      {selectedState && (
         <Chart
           options={chartData.options}
           series={chartData.series}
