@@ -10,7 +10,6 @@ import { useParseCSV, useProcessedCountyData } from "./hooks";
 import { US_COUNTIES_CSV_URL } from "./constants";
 import type { CountyData, Option } from "./types";
 
-
 enum ViewMode {
   TOTAL_CASES = "TOTAL_CASES",
   NEW_CASES = "NEW_CASES",

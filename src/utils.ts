@@ -17,10 +17,10 @@ const getDataByState = (countiesDataRows: CountyData[]): CountyDataDict => {
 
 /**
  * Returns an object where each key is a state
- * and each value is an object, 
- * where each key is a county in the state, 
+ * and each value is an object,
+ * where each key is a county in the state,
  * and each value is an array of data for that county
- * 
+ *
  * {
  *   "Louisiana": {
  *      "New Orleans": [CountyData, CountyData, ...]
@@ -33,7 +33,7 @@ const getDataByState = (countiesDataRows: CountyData[]): CountyDataDict => {
  *   },
  *   ...
  * }
- * @param countiesDataRows 
+ * @param countiesDataRows
  */
 const getCountyDataByState = (
   countiesDataRows: CountyData[]
@@ -54,11 +54,9 @@ const getCountyDataByState = (
 
 const createOption = (state: string) => ({ value: state, label: state });
 
-/**
- * returns a n
- * @param countyDataRows 
- */
-export const processCountyDataByState = (countyDataRows: CountyData[] | null) => {
+export const processCountyDataByState = (
+  countyDataRows: CountyData[] | null
+) => {
   const stateDataDict = countyDataRows
     ? getCountyDataByState(countyDataRows)
     : {};
@@ -81,9 +79,9 @@ export const createCountyOptions = (
   const counties = countyInStateDataDict
     ? Object.keys(countyInStateDataDict)
     : [];
-  const countyOptions =  counties.map(createOption);
+  const countyOptions = counties.map(createOption);
 
-  return countyOptions
+  return countyOptions;
 };
 
 export const getSelectedCountyData = (
