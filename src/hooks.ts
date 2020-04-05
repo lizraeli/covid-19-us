@@ -58,19 +58,19 @@ export const useProcessedCountyData = (
       ? countyParseState.data
       : null;
 
-  const { stateDataDict, stateOptions } = useMemo(
+  const { CountyDataByStateDict, stateOptions } = useMemo(
     () => processCountyDataByState(dataRows),
     [dataRows]
   );
 
   const countyOptions = useMemo(
-    () => createCountyOptions(stateDataDict, selectedState),
-    [stateDataDict, selectedState]
+    () => createCountyOptions(CountyDataByStateDict, selectedState),
+    [CountyDataByStateDict, selectedState]
   );
 
   const selectedCountyDataRows = useMemo(
-    () => getSelectedCountyData(stateDataDict, selectedState, selectedCounty),
-    [stateDataDict, selectedState, selectedCounty]
+    () => getSelectedCountyData(CountyDataByStateDict, selectedState, selectedCounty),
+    [CountyDataByStateDict, selectedState, selectedCounty]
   );
 
   const dateRows = useMemo(

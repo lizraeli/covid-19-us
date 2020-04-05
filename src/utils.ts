@@ -3,7 +3,7 @@ import groupBy from "lodash/groupBy";
 import type {
   CountyData,
   CountyDataDict,
-  StateDataDict,
+  CountyDataByStateDict,
   Option,
 } from "./types";
 
@@ -37,19 +37,19 @@ const getDataByState = (countiesDataRows: CountyData[]): CountyDataDict => {
  */
 const getCountyDataByState = (
   countiesDataRows: CountyData[]
-): StateDataDict => {
+): CountyDataByStateDict => {
   const dataByStateDict = getDataByState(countiesDataRows);
-  const stateDataDict = Object.entries(dataByStateDict).reduce(
+  const CountyDataByStateDict = Object.entries(dataByStateDict).reduce(
     (dict, [state, dataRows]) => {
       return {
         ...dict,
         [state]: getDataByCounty(dataRows),
       };
     },
-    {} as StateDataDict
+    {} as CountyDataByStateDict
   );
 
-  return stateDataDict;
+  return CountyDataByStateDict;
 };
 
 const createOption = (state: string) => ({ value: state, label: state });
@@ -57,27 +57,27 @@ const createOption = (state: string) => ({ value: state, label: state });
 export const processCountyDataByState = (
   countyDataRows: CountyData[] | null
 ) => {
-  const stateDataDict = countyDataRows
+  const CountyDataByStateDict = countyDataRows
     ? getCountyDataByState(countyDataRows)
     : {};
-  const states = Object.keys(stateDataDict);
+  const states = Object.keys(CountyDataByStateDict);
   const stateOptions = states.map(createOption);
 
   return {
-    stateDataDict,
+    CountyDataByStateDict,
     stateOptions,
   };
 };
 
 export const createCountyOptions = (
-  stateDataDict: StateDataDict,
+  CountyDataByStateDict: CountyDataByStateDict,
   selectedState: Option | null
 ) => {
-  const countyInStateDataDict = selectedState
-    ? stateDataDict[selectedState.value]
+  const countyInCountyDataByStateDict = selectedState
+    ? CountyDataByStateDict[selectedState.value]
     : {};
-  const counties = countyInStateDataDict
-    ? Object.keys(countyInStateDataDict)
+  const counties = countyInCountyDataByStateDict
+    ? Object.keys(countyInCountyDataByStateDict)
     : [];
   const countyOptions = counties.map(createOption);
 
@@ -85,15 +85,15 @@ export const createCountyOptions = (
 };
 
 export const getSelectedCountyData = (
-  stateDataDict: StateDataDict,
+  CountyDataByStateDict: CountyDataByStateDict,
   selectedState: Option | null,
   selectedCounty: Option | null
 ) => {
-  const countyInStateDataDict = selectedState
-    ? stateDataDict[selectedState.value]
+  const countyInCountyDataByStateDict = selectedState
+    ? CountyDataByStateDict[selectedState.value]
     : {};
   const countyData = selectedCounty
-    ? countyInStateDataDict[selectedCounty.value]
+    ? countyInCountyDataByStateDict[selectedCounty.value]
     : [];
   return countyData;
 };

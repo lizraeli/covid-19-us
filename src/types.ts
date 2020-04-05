@@ -10,7 +10,7 @@ export interface CountyData {
 }
 
 export type CountyDataDict = Record<string, CountyData[]>;
-export type StateDataDict = Record<string, CountyDataDict>;
+export type CountyDataByStateDict = Record<string, CountyDataDict>;
 
 export interface Option {
   value: string;
