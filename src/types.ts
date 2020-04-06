@@ -1,23 +1,39 @@
 import { ParseStatus } from "./constants";
 
-export interface CountyData {
+export interface CaseData {
   date: string;
+  cases: number;
+  deeaths: number;
+}
+
+export interface CountyData extends CaseData {
   county: string;
   state: string;
-  fips?: number;
-  cases: number;
-  deaths: number;
 }
 
-export interface StateData {
-  date: string;
+export interface StateData extends CaseData {
   state: string;
-  fips?: number;
-  cases: number;
-  deaths: number;
 }
 
-export type StateDataDict = Record<string, StateData[]>
+export interface ChartData {
+  options: {
+    chart: {
+      id: string;
+    };
+    xaxis: {
+      categories: string[];
+    };
+  };
+  series: [
+    {
+      name: string;
+      data: number[];
+    }
+  ];
+}
+
+export type DataDict<T extends CaseData> = Record<string, T[]>
+export type StateDataDict = Record<string, StateData[]>;
 export type CountyDataDict = Record<string, CountyData[]>;
 export type CountyDataByStateDict = Record<string, CountyDataDict>;
 

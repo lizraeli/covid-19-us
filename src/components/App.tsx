@@ -5,31 +5,15 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import Chart from "react-apexcharts";
 
-import { ParseStatus, US_STATES_CSV_URL } from "./constants";
+import { US_STATES_CSV_URL, US_COUNTIES_CSV_URL } from "../constants";
 import {
   useParseCSV,
   useProcessedCountyData,
   useProcessedStateData,
-} from "./hooks";
-import { US_COUNTIES_CSV_URL } from "./constants";
-import type { CountyData, StateData, Option, ParseState } from "./types";
+} from "../hooks";
+import { isAnyParseStateActive, getErrorFromParseStates } from "./utils";
 
-function getErrorFromParseStates(...parseStates: ParseState<any>[]) {
-  // const parseStateWithError = parseStates.find(parseState => parseState.status === ParseStatus.ERROR)
-  for (const parseState of parseStates) {
-    if (parseState.status === ParseStatus.ERROR) {
-      return parseState.error;
-    }
-  }
-
-  return null;
-}
-
-function isAnyParseStateActive(...parseStates: ParseState<any>[]) {
-  return parseStates.some(
-    (parseState) => parseState.status === ParseStatus.ACTIVE
-  );
-}
+import type { CountyData, Option, StateData } from "../types";
 
 enum ViewMode {
   TOTAL_CASES = "TOTAL_CASES",
@@ -73,7 +57,6 @@ function App() {
   );
 
   const {
-    stateDataDict,
     stateOptions,
     totalCasesChartData: totalCasesForStateChartData,
     newCasesChartData: newCasesForStateChartData,
@@ -120,22 +103,19 @@ function App() {
       </div>
     );
   }
-  console.log("stateDataDict: ", stateDataDict);
-  /* countyParseState.status is ParseStatus.SUCCESS */
 
-  const totalCasesChartData = selectedCounty
-    ? totalCasesForCountyChartData
-    : totalCasesForStateChartData;
+  const getTotalCasesChartData = () =>
+    selectedCounty ? totalCasesForCountyChartData : totalCasesForStateChartData;
 
-  const newCasesChartData = selectedCounty
-    ? newCasesForCountyChartData
-    : newCasesForStateChartData;
+  const getNewCasesChartData = () =>
+    selectedCounty ? newCasesForCountyChartData : newCasesForStateChartData;
 
   const chartData =
     selectedViewMode.value === ViewMode.TOTAL_CASES
-      ? totalCasesChartData
-      : newCasesChartData;
+      ? getTotalCasesChartData()
+      : getNewCasesChartData();
 
+  console.log("chartData: ", chartData)
   return (
     <div className="main-container">
       <div className="select-container">
@@ -168,11 +148,11 @@ function App() {
       </div>
       {selectedState && (
         <Chart
-          
           options={chartData.options}
           series={chartData.series}
+          width={"100%"}
+          height={380}
           type="bar"
-          width="800"
         />
       )}
     </div>
