@@ -5,7 +5,10 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import Chart from "react-apexcharts";
 
-import { US_STATES_CSV_URL, US_COUNTIES_CSV_URL } from "../constants";
+import {
+  US_STATES_CSV_URL,
+  US_COUNTIES_CSV_URL,
+} from "../constants";
 import {
   useParseCSV,
   useProcessedCountyData,
@@ -103,7 +106,6 @@ function App() {
       </div>
     );
   }
-
   const getTotalCasesChartData = () =>
     selectedCounty ? totalCasesForCountyChartData : totalCasesForStateChartData;
 
@@ -114,7 +116,7 @@ function App() {
     if (!selectedState) {
       return `Please choose a state`;
     }
-  
+
     return selectedCounty
       ? `${selectedViewMode.label} in ${selectedCounty.label}, ${selectedState.label}`
       : `${selectedViewMode.label} cases in ${selectedState.label}`;
@@ -129,24 +131,28 @@ function App() {
     <div className="main-container">
       <h2>Covid-19 Case Tracker</h2>
       <div className="select-container">
-        <label htmlFor="state-select">State</label>
-        <Select
-          isClearable
-          value={selectedState}
-          options={stateOptions}
-          onChange={(selected) => handleStateSelect(selected as Option)}
-          placeholder="Select State"
-          id="state-select"
-        />
-        <label htmlFor="county-select">County</label>
-        <Select
-          isClearable
-          value={selectedCounty}
-          options={countyOptions}
-          onChange={(selected) => setSelectedCounty(selected as Option)}
-          placeholder="Select County"
-          id="county-select"
-        />
+        <div data-testid="state-select">
+          <label htmlFor="state-select">State</label>
+          <Select
+            isClearable
+            value={selectedState}
+            options={stateOptions}
+            onChange={(selected) => handleStateSelect(selected as Option)}
+            placeholder="Select State"
+            id="state-select"
+          />
+        </div>
+        <div data-testid="county-select">
+          <label htmlFor="county-select">County</label>
+          <Select
+            isClearable
+            value={selectedCounty}
+            options={countyOptions}
+            onChange={(selected) => setSelectedCounty(selected as Option)}
+            placeholder="Select County"
+            id="county-select"
+          />
+        </div>
         <label htmlFor="mode-select">View Mode</label>
         <Select
           value={selectedViewMode}
@@ -159,6 +165,7 @@ function App() {
       <h2>{getHeading()}</h2>
       {selectedState && (
         <Chart
+          data-testid="chart"
           options={chartData.options}
           series={chartData.series}
           width={"100%"}
