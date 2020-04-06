@@ -110,14 +110,24 @@ function App() {
   const getNewCasesChartData = () =>
     selectedCounty ? newCasesForCountyChartData : newCasesForStateChartData;
 
+  const getHeading = () => {
+    if (!selectedState) {
+      return `Please choose a state`;
+    }
+  
+    return selectedCounty
+      ? `${selectedViewMode.label} in ${selectedCounty.label}, ${selectedState.label}`
+      : `${selectedViewMode.label} cases in ${selectedState.label}`;
+  };
+
   const chartData =
     selectedViewMode.value === ViewMode.TOTAL_CASES
       ? getTotalCasesChartData()
       : getNewCasesChartData();
 
-  console.log("chartData: ", chartData)
   return (
     <div className="main-container">
+      <h2>Covid-19 Case Tracker</h2>
       <div className="select-container">
         <label htmlFor="state-select">State</label>
         <Select
@@ -146,6 +156,7 @@ function App() {
           id="mode-select"
         />
       </div>
+      <h2>{getHeading()}</h2>
       {selectedState && (
         <Chart
           options={chartData.options}
