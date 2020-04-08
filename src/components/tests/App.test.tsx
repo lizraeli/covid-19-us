@@ -44,7 +44,7 @@ test("Select a state and county", async () => {
   const dataForState = stateData.filter((data) => data.state === selectedState);
   const stateDataDates = dataForState.map((data) => data.date);
   const stateDataCases = dataForState.map((data) => data.cases);
-  
+
   // assertions
   let mockChartCall;
   mockChartCall = mockChart.mock.calls[0][0];
@@ -55,9 +55,8 @@ test("Select a state and county", async () => {
   });
 
   // selecting a county from the county dropdown
-  const countySelect = getByTestId("county-select");
   const selectedCounty = "Essex";
-  fireEvent.change(countySelect, {
+  fireEvent.change(getByTestId("county-select"), {
     target: { value: selectedCounty },
   });
 
