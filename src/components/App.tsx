@@ -77,7 +77,6 @@ function App() {
   };
 
   const handleCountySelect = (selectedCounty: Option) => {
-    console.log("handleCountySelect:  ", selectedCounty)
     setSelectedCounty(selectedCounty);
   };
 

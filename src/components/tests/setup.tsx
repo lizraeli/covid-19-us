@@ -22,7 +22,7 @@ jest.mock(
       }
     }
     return (
-      <select data-testid={id} value={value} onChange={handleChange}>
+      <select data-testid={id} value={value || ""} onChange={handleChange}>
         {options.map(({ label, value }) => (
           <option key={value} value={value}>
             {label}
