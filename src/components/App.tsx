@@ -76,6 +76,11 @@ function App() {
     setSelectedCounty(null);
   };
 
+  const handleCountySelect = (selectedCounty: Option) => {
+    console.log("handleCountySelect:  ", selectedCounty)
+    setSelectedCounty(selectedCounty);
+  };
+
   const error = getErrorFromParseStates(
     countyDataParseState,
     stateDataParseState
@@ -119,7 +124,7 @@ function App() {
 
     return selectedCounty
       ? `${selectedViewMode.label} in ${selectedCounty.label}, ${selectedState.label}`
-      : `${selectedViewMode.label} cases in ${selectedState.label}`;
+      : `${selectedViewMode.label} in ${selectedState.label}`;
   };
 
   const chartData =
@@ -131,7 +136,7 @@ function App() {
     <div className="main-container">
       <h2>Covid-19 Case Tracker</h2>
       <div className="select-container">
-        <div data-testid="state-select">
+        <div>
           <label htmlFor="state-select">State</label>
           <Select
             isClearable
@@ -142,13 +147,13 @@ function App() {
             id="state-select"
           />
         </div>
-        <div data-testid="county-select">
+        <div>
           <label htmlFor="county-select">County</label>
           <Select
             isClearable
             value={selectedCounty}
             options={countyOptions}
-            onChange={(selected) => setSelectedCounty(selected as Option)}
+            onChange={(selected) => handleCountySelect(selected as Option)}
             placeholder="Select County"
             id="county-select"
           />

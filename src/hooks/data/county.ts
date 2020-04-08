@@ -6,6 +6,7 @@ import {
   createOptionsFromDataDict,
   mapSelectedRows,
   makeChartData,
+  getDataAfterStartDate,
 } from "./utils";
 import type {
   CountyDataByStateDict,
@@ -91,7 +92,8 @@ export const useProcessedCountyData = (
       : null;
 
   const stateDictWithCountyData = useMemo(() => {
-    return dataRows ? getCountyDataByState(dataRows) : {};
+    const filteredDataRows = getDataAfterStartDate(dataRows);
+    return filteredDataRows ? getCountyDataByState(filteredDataRows) : {};
   }, [dataRows]);
 
   const {
