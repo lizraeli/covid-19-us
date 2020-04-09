@@ -16,22 +16,50 @@ const mockChart = jest.fn((props: any) => (
 jest.mock("react-apexcharts", () => jest.fn(mockChart));
 
 describe("App", () => {
-  beforeAll(() => {
+  const csvStateData = ParseCSV.unparse(stateData);
+  const csvCountyData = ParseCSV.unparse(countyData);
+  beforeEach(() => {
     xhrMock.setup();
-    xhrMock.get(US_STATES_CSV_URL, {
-      body: ParseCSV.unparse(stateData),
-    });
+  });
 
-    xhrMock.get(US_COUNTIES_CSV_URL, {
-      body: ParseCSV.unparse(countyData),
-    });
+  afterEach(() => {
+    xhrMock.teardown();
   });
 
   beforeEach(() => {
     mockChart.mockClear();
   });
 
+  test("Error fetching", async () => {
+    const errorMessage = "Could not fetch.";
+    xhrMock.get(US_STATES_CSV_URL, {
+      status: 400,
+      reason: errorMessage,
+      body: '{"error": "error"}',
+    });
+    xhrMock.get(US_COUNTIES_CSV_URL, {
+      body: csvCountyData,
+    });
+
+    const App = require("../App").default;
+    const { getByTestId } = render(<App />);
+
+    // State dropdown will be rendered once the CSV fails to fetch
+    const errorElem = await waitForElement(() =>
+      getByTestId("error-message")
+    );
+
+    expect(errorElem.textContent).toContain(errorMessage);
+  });
+
   test("View total cases for state and county", async () => {
+    xhrMock.get(US_STATES_CSV_URL, {
+      body: csvStateData,
+    });
+    xhrMock.get(US_COUNTIES_CSV_URL, {
+      body: csvCountyData,
+    });
+
     const App = require("../App").default;
     const { getByTestId } = render(<App />);
 
@@ -80,6 +108,14 @@ describe("App", () => {
   });
 
   test("View new cases for state and county", async () => {
+    xhrMock.get(US_STATES_CSV_URL, {
+      body: csvStateData,
+    });
+
+    xhrMock.get(US_COUNTIES_CSV_URL, {
+      body: csvCountyData,
+    });
+
     const App = require("../App").default;
     const { getByTestId } = render(<App />);
 

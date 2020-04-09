@@ -5,10 +5,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import Chart from "react-apexcharts";
 
-import {
-  US_STATES_CSV_URL,
-  US_COUNTIES_CSV_URL,
-} from "../constants";
+import { US_STATES_CSV_URL, US_COUNTIES_CSV_URL } from "../constants";
 import {
   useParseCSV,
   useProcessedCountyData,
@@ -89,7 +86,7 @@ function App() {
     return (
       <div className="App">
         <header className="App-header">
-          <div> {error} </div>
+          <div data-testid="error-message"> {error} </div>
         </header>
       </div>
     );
