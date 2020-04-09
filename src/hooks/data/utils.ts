@@ -1,12 +1,13 @@
 import moment from "moment";
 
 import type { CaseData, DataDict } from "../../types";
-import { START_DATE } from "../../constants";
 
 export const getDataAfterStartDate = <T extends CaseData>(
-  dataRows: T[] | null
+  dataRows: T[] | null,
+  startDate: string
 ) => {
-  return dataRows?.filter((data) => moment(data.date).isAfter(START_DATE));
+  const momentStartDate = moment(startDate);
+  return dataRows?.filter((data) => moment(data.date).isAfter(momentStartDate));
 };
 
 export const createOptionsFromDataDict = <T extends CaseData>(

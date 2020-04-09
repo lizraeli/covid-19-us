@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import groupBy from "lodash/groupBy";
 
-import { ParseStatus } from "../../constants";
+import { ParseStatus, START_DATE } from "../../constants";
 import {
   createOptionsFromDataDict,
   mapSelectedRows,
@@ -92,7 +92,7 @@ export const useProcessedCountyData = (
       : null;
 
   const stateDictWithCountyData = useMemo(() => {
-    const filteredDataRows = getDataAfterStartDate(dataRows);
+    const filteredDataRows = getDataAfterStartDate(dataRows, START_DATE);
     return filteredDataRows ? getCountyDataByState(filteredDataRows) : {};
   }, [dataRows]);
 

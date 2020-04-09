@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import groupBy from "lodash/groupBy";
 
-import { ParseStatus } from "../../constants";
+import { ParseStatus, START_DATE } from "../../constants";
 import {
   createOptionsFromDataDict,
   getDataAfterStartDate,
@@ -21,7 +21,7 @@ export const useProcessedStateData = (
       : null;
 
   const { stateDataDict, stateOptions } = useMemo(() => {
-    const filteredDataRows = getDataAfterStartDate(dataRows);
+    const filteredDataRows = getDataAfterStartDate(dataRows, START_DATE);
     const stateDataDict = filteredDataRows
       ? groupBy(filteredDataRows, (stateData) => stateData.state)
       : {};
