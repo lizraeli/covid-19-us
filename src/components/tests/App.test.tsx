@@ -71,13 +71,16 @@ describe("App", () => {
       target: { value: selectedState },
     });
 
+    // assert heading content
+    expect(getByTestId("heading").textContent).toEqual("Total Cases in New York")
+
+    // assertions about data provided to chart  
     const dataForState = stateData.filter(
       (data) => data.state === selectedState
     );
     const stateDataDates = dataForState.map((data) => data.date);
     const stateDataCases = dataForState.map((data) => data.cases);
 
-    // assertions
     let mockChartCall;
     mockChartCall = mockChart.mock.calls[0][0];
     expect(mockChartCall.options.xaxis.categories).toEqual(stateDataDates);
@@ -92,13 +95,16 @@ describe("App", () => {
       target: { value: selectedCounty },
     });
 
+    // assert heading content
+    expect(getByTestId("heading").textContent).toEqual("Total Cases in Essex, New York")
+
+    // assertions about data provided to chart
     const dataForCounty = countyData.filter(
       (data) => data.state === selectedState && data.county === selectedCounty
     );
     const countyDataDates = dataForCounty.map((data) => data.date);
     const countyDataCases = dataForCounty.map((data) => data.cases);
 
-    // assertions
     mockChartCall = mockChart.mock.calls[1][0];
     expect(mockChartCall.options.xaxis.categories).toEqual(countyDataDates);
     expect(mockChartCall.series[0]).toEqual({
@@ -132,13 +138,16 @@ describe("App", () => {
       target: { value: selectedState },
     });
 
+    // assert heading content
+    expect(getByTestId("heading").textContent).toEqual("New Cases in New York")
+
+    // assertions about data provided to chart
     const dataForState = stateData.filter(
       (data) => data.state === selectedState
     );
     const stateDataDates = dataForState.map((data) => data.date);
     const stateDataNewCases = calcNewCases(dataForState);
 
-    // assertions
     let mockChartCall;
     mockChartCall = mockChart.mock.calls[0][0];
     expect(mockChartCall.options.xaxis.categories).toEqual(stateDataDates);
@@ -152,14 +161,16 @@ describe("App", () => {
     fireEvent.change(getByTestId("county-select"), {
       target: { value: selectedCounty },
     });
+    // assert heading content
+    expect(getByTestId("heading").textContent).toEqual("New Cases in Essex, New York")
 
+    // assertions about data provided to chart
     const dataForCounty = countyData.filter(
       (data) => data.state === selectedState && data.county === selectedCounty
     );
     const countyDataDates = dataForCounty.map((data) => data.date);
     const countyDataCases = calcNewCases(dataForCounty);
 
-    // assertions
     mockChartCall = mockChart.mock.calls[1][0];
     expect(mockChartCall.options.xaxis.categories).toEqual(countyDataDates);
     expect(mockChartCall.series[0]).toEqual({

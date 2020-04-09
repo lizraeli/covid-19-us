@@ -107,6 +107,7 @@ function App() {
       </div>
     );
   }
+
   const getTotalCasesChartData = () =>
     selectedCounty ? totalCasesForCountyChartData : totalCasesForStateChartData;
 
@@ -163,7 +164,7 @@ function App() {
           id="mode-select"
         />
       </div>
-      <h2>{getHeading()}</h2>
+      <h2 data-testid="heading">{getHeading()}</h2>
       {selectedState && (
         <Chart
           data-testid="chart"
