@@ -3,7 +3,7 @@ import { ParseStatus } from "./constants";
 export interface CaseData {
   date: string;
   cases: number;
-  deeaths: number;
+  deaths: number;
 }
 
 export interface CountyData extends CaseData {
