@@ -1,6 +1,7 @@
 import moment from "moment";
 
 import type { CaseData, DataDict } from "../../types";
+import type { ApexOptions } from "apexcharts";
 
 export const getDataAfterStartDate = <T extends CaseData>(
   dataRows: T[] | null,
@@ -41,6 +42,46 @@ export const mapSelectedRows = (selectedDataRows: CaseData[]) => {
   };
 };
 
+const getNumberWithCommas = (num: number) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+const chartOptions: ApexOptions = {
+  chart: {
+    id: "basic-bar",
+  },
+  dataLabels: {
+    formatter: getNumberWithCommas,
+    textAnchor: "end",
+    offsetY: 20,
+   
+  }, 
+  plotOptions: {
+    bar: {
+      horizontal: false,
+      columnWidth: "80%",
+      dataLabels: {
+        position: 'bottom',
+        maxItems: 100,
+        hideOverflowingLabels: true,
+        orientation: 'vertical',
+      }, 
+      colors: {
+        ranges: [
+          {
+            from: 0,
+            to: Infinity,
+            color: "#D9534F",
+          }
+         
+        ],
+      },
+    },
+    
+  },
+
+};
+
 export const makeChartData = (
   name: string = "chart",
   categories: string[],
@@ -48,43 +89,15 @@ export const makeChartData = (
 ) => {
   return {
     options: {
-      chart: {
-        id: "basic-bar",
-        width: "50%",
-        height: 380,
-        type: "bar",
-      },
+      ...chartOptions,
       xaxis: {
         categories,
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      colors: [
-        function ({
-          value,
-          seriesIndex,
-          w,
-        }: {
-          value: number;
-          seriesIndex: number;
-          w: number;
-        }) {
-          if (value < 55) {
-            return "#7E36AF";
-          } else {
-            return "#D9534F";
+        labels: {
+          formatter: function (value: string) {
+            return value.replace("2020-", "")
           }
-        },
-        function ({ value }: { value: number }) {
-          //   if (value < 55) {
-          //     return "#7E36AF";
-          //   } else {
-          //     return "#D9534F";
-          //   }
-          return "FFFFFF";
-        },
-      ],
+        }
+      },
     },
     series: [
       {
