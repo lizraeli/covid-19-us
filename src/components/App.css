@@ -13,6 +13,51 @@
   justify-content: space-between;
 }
 
+.heading {
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+}
+
+.heading.chart {
+  padding: 10px;
+
+}
+
+.heading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.chart-container {
+  display: flex;
+  padding-top: 1rem;
+}
+
+@media (max-width: 1024px)  {
+  .chart-container {
+    border: 1px solid #4C3C1B;
+    overflow-x: auto;
+    flex-wrap: nowrap; 
+  }
+  .heading.chart {
+    text-decoration: underline;
+  }
+}
+
+@media (min-width: 1025px) {
+  .chart-container {
+    align-items: center;
+    justify-content: center;
+    border: none;
+  }
+
+  .heading.chart {
+    border: 1px solid #4C3C1B;;
+  }
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

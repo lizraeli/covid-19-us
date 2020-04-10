@@ -131,7 +131,7 @@ function App() {
 
   return (
     <div className="main-container">
-      <h2>Covid-19 Case Tracker</h2>
+      <h2 className="heading">Covid-19 Case Tracker</h2>
       <div className="select-container">
         <div>
           <label htmlFor="state-select">State</label>
@@ -164,16 +164,24 @@ function App() {
           id="mode-select"
         />
       </div>
-      <h2 data-testid="heading">{getHeading()}</h2>
+      <div className="heading-container">
+        <h2 data-testid="heading" className="heading chart">
+          {getHeading()}
+        </h2>
+      </div>
       {selectedState && (
-        <Chart
-          data-testid="chart"
-          options={chartData.options}
-          series={chartData.series}
-          width={"100%"}
-          height={380}
-          type="bar"
-        />
+        <div className="flex-column-container">
+          <div className="chart-container">
+            <Chart
+              data-testid="chart"
+              options={chartData.options}
+              series={chartData.series}
+              type="bar"
+              height={380}
+              width={1200}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
