@@ -50,9 +50,13 @@ export const calcDataForUS = (dataRows: CaseData[]) => {
   const totalUSCasesRows = Object.values(dateDataDict).map((caseDataRows) =>
     caseDataRows.reduce((cases, data) => cases + data.cases, 0)
   );
-  const newUSCasesRows = Object.values(dateDataDict).map((caseDataRows) => {
-    const newCases = calcNewCases(caseDataRows);
-    return newCases.reduce((sum, num) => sum + num);
+
+  const newUSCasesRows = totalUSCasesRows.map((cases, index) => {
+    const isFirstElement = index === 0;
+    const prevCases = isFirstElement ? 0 : totalUSCasesRows[index - 1];
+    const newCases = cases - prevCases;
+
+    return newCases;
   });
 
   return { dateRowsUS, totalUSCasesRows, newUSCasesRows };
