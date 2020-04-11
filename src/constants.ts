@@ -1,5 +1,3 @@
-import moment from "moment";
-
 export enum ParseStatus {
   UNDEFINED = "UNDEFINED",
   SUCCESS = "SUCCESS",
@@ -7,7 +5,7 @@ export enum ParseStatus {
   ERROR = "ERROR",
 }
 
-export const START_DATE ="2020-03-01"
+export const START_DATE = "2020-03-01";
 
 export const US_STATES_CSV_URL =
   "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv";

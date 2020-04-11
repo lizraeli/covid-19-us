@@ -3,9 +3,10 @@ import groupBy from "lodash/groupBy";
 
 import { ParseStatus, START_DATE } from "../../constants";
 import {
+  calcDataForUS,
   createOptionsFromDataDict,
   getDataAfterStartDate,
-  mapSelectedRows,
+  mapCaseDataRows,
   makeChartData,
 } from "./utils";
 
@@ -20,42 +21,62 @@ export const useProcessedStateData = (
       ? stateDataParseState.data
       : null;
 
+  const filteredDataRows = useMemo(
+    () => getDataAfterStartDate(dataRows, START_DATE),
+    [dataRows]
+  );
+
+  const { totalUSCasesChartData, newUSCasesChartData } = useMemo(() => {
+    const { dateRowsUS, totalUSCasesRows, newUSCasesRows } = calcDataForUS(
+      filteredDataRows || []
+    );
+    const totalUSCasesChartData = makeChartData("US", dateRowsUS, totalUSCasesRows);
+    const newUSCasesChartData = makeChartData("US", dateRowsUS, newUSCasesRows);
+
+    return { totalUSCasesChartData, newUSCasesChartData };
+  }, [filteredDataRows]);
+
   const { stateDataDict, stateOptions } = useMemo(() => {
-    const filteredDataRows = getDataAfterStartDate(dataRows, START_DATE);
     const stateDataDict = filteredDataRows
       ? groupBy(filteredDataRows, (stateData) => stateData.state)
       : {};
-
     const stateOptions = createOptionsFromDataDict(stateDataDict);
-    return { stateDataDict, stateOptions };
-  }, [dataRows]);
 
-  const { totalCasesChartData, newCasesChartData } = useMemo(() => {
+    return { stateDataDict, stateOptions };
+  }, [filteredDataRows]);
+
+  const {
+    totalCasesForStateChartData,
+    newCasesForStateChartData,
+  } = useMemo(() => {
     const selectedStateDataRows = selectedState
       ? stateDataDict[selectedState.value]
       : [];
-    const { dateRows, casesRows, newCasesRows } = mapSelectedRows(
+    const { dateRows, casesRows, newCasesRows } = mapCaseDataRows(
       selectedStateDataRows
     );
-    const totalCasesChartData = makeChartData(
+    const totalCasesForStateChartData = makeChartData(
       selectedState?.value,
       dateRows,
       casesRows
     );
-    const newCasesChartData = makeChartData(
+    const newCasesForStateChartData = makeChartData(
       selectedState?.value,
       dateRows,
       newCasesRows
     );
+
     return {
-      totalCasesChartData,
-      newCasesChartData,
+      totalCasesForStateChartData,
+      newCasesForStateChartData,
     };
   }, [selectedState, stateDataDict]);
 
   return {
     stateOptions,
-    totalCasesChartData,
-    newCasesChartData,
+    totalUSCasesChartData,
+    newUSCasesChartData,
+    totalCasesForStateChartData,
+    newCasesForStateChartData,
   };
 };

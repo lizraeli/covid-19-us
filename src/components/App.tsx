@@ -5,7 +5,11 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import Chart from "react-apexcharts";
 
-import { US_STATES_CSV_URL, US_COUNTIES_CSV_URL } from "../constants";
+import {
+  US_STATES_CSV_URL,
+  US_COUNTIES_CSV_URL,
+  ParseStatus,
+} from "../constants";
 import {
   useParseCSV,
   useProcessedCountyData,
@@ -58,8 +62,10 @@ function App() {
 
   const {
     stateOptions,
-    totalCasesChartData: totalCasesForStateChartData,
-    newCasesChartData: newCasesForStateChartData,
+    totalUSCasesChartData,
+    newUSCasesChartData,
+    totalCasesForStateChartData,
+    newCasesForStateChartData,
   } = useProcessedStateData(stateDataParseState, selectedState);
 
   useEffect(() => {
@@ -108,15 +114,29 @@ function App() {
     );
   }
 
-  const getTotalCasesChartData = () =>
-    selectedCounty ? totalCasesForCountyChartData : totalCasesForStateChartData;
+  const getTotalCasesChartData = () => {
+    if (!selectedState) {
+      return totalUSCasesChartData;
+    }
+    if (selectedCounty) {
+      return totalCasesForCountyChartData;
+    }
+    return totalCasesForStateChartData;
+  };
 
-  const getNewCasesChartData = () =>
-    selectedCounty ? newCasesForCountyChartData : newCasesForStateChartData;
+  const getNewCasesChartData = () => {
+    if (!selectedState) {
+      return newUSCasesChartData;
+    }
+    if (selectedCounty) {
+      return newCasesForCountyChartData;
+    }
+    return newCasesForStateChartData;
+  };
 
   const getHeading = () => {
     if (!selectedState) {
-      return `Please choose a state`;
+      return `${selectedViewMode.label} in the US`;
     }
 
     return selectedCounty
@@ -128,6 +148,10 @@ function App() {
     selectedViewMode.value === ViewMode.TOTAL_CASES
       ? getTotalCasesChartData()
       : getNewCasesChartData();
+
+  const isParseSuccess =
+    countyDataParseState.status === ParseStatus.SUCCESS &&
+    stateDataParseState.status === ParseStatus.SUCCESS;
 
   return (
     <div className="main-container">
@@ -169,9 +193,9 @@ function App() {
           {getHeading()}
         </h2>
       </div>
-      {selectedState && (
-        <div className="flex-column-container">
-          <div className="chart-container">
+      <div className="flex-column-container">
+        <div className="chart-container">
+          {isParseSuccess && (
             <Chart
               data-testid="chart"
               options={chartData.options}
@@ -180,9 +204,9 @@ function App() {
               height={380}
               width={1200}
             />
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

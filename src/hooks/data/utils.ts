@@ -1,4 +1,5 @@
 import moment from "moment";
+import groupBy from "lodash/groupBy";
 
 import type { CaseData, DataDict } from "../../types";
 import type { ApexOptions } from "apexcharts";
@@ -30,16 +31,31 @@ export const calcNewCases = (dataRows: CaseData[]) => {
   });
 };
 
-export const mapSelectedRows = (selectedDataRows: CaseData[]) => {
-  const dateRows = selectedDataRows.map((data) => data.date);
-  const casesRows = selectedDataRows.map((stateData) => stateData.cases);
-  const newCasesRows = calcNewCases(selectedDataRows);
+export const mapCaseDataRows = (dataRows: CaseData[]) => {
+  const dateRows = dataRows.map((data) => data.date);
+  const casesRows = dataRows.map((stateData) => stateData.cases);
+  const newCasesRows = calcNewCases(dataRows);
 
   return {
     dateRows,
     casesRows,
     newCasesRows,
   };
+};
+
+export const calcDataForUS = (dataRows: CaseData[]) => {
+  const dateDataDict = dataRows ? groupBy(dataRows, (data) => data.date) : {};
+
+  const dateRowsUS = Object.keys(dateDataDict);
+  const totalUSCasesRows = Object.values(dateDataDict).map((caseDataRows) =>
+    caseDataRows.reduce((cases, data) => cases + data.cases, 0)
+  );
+  const newUSCasesRows = Object.values(dateDataDict).map((caseDataRows) => {
+    const newCases = calcNewCases(caseDataRows);
+    return newCases.reduce((sum, num) => sum + num);
+  });
+
+  return { dateRowsUS, totalUSCasesRows, newUSCasesRows };
 };
 
 const getNumberWithCommas = (num: number) => {
@@ -54,15 +70,15 @@ const axisOptions: ApexOptions = {
       formatter: function (value: string) {
         return value.replace("2020-", "").replace("-", "/");
       },
-    }
+    },
   },
-}
+};
 
 const chartOptions: ApexOptions = {
   chart: {
     id: "basic-bar",
   },
-  
+
   dataLabels: {
     formatter: getNumberWithCommas,
     textAnchor: "end",
@@ -92,7 +108,7 @@ const chartOptions: ApexOptions = {
 };
 
 export const makeChartData = (
-  name: string = "chart",
+  name: string = "US",
   categories: string[],
   data: number[]
 ) => {
