@@ -4,14 +4,16 @@ export const getNumberWithCommas = (num: number) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
+export const formatDate = (value: string) => {
+  return value.replace("2020-", "").replace("-", "/");
+};
+
 const axisOptions: ApexOptions = {
   xaxis: {
     labels: {
       rotate: -45,
       rotateAlways: true,
-      formatter: function (value: string) {
-        return value.replace("2020-", "").replace("-", "/");
-      },
+      formatter: formatDate,
     },
   },
 };

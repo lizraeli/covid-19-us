@@ -1,4 +1,4 @@
-import { getNumberWithCommas } from "./chart";
+import { getNumberWithCommas, formatDate } from "./chart";
 
 describe("getNumberWithCommas", () => {
   test("number with 3 digits", () => {
@@ -9,5 +9,11 @@ describe("getNumberWithCommas", () => {
   });
   test("number with 9 digits", () => {
     expect(getNumberWithCommas(123456789)).toEqual("123,456,789");
+  });
+});
+
+describe("formatDate", () => {
+  test("removes the years and replaces dashes with backslashes ", () => {
+    expect(formatDate("2020-03-12")).toEqual("03/12");
   });
 });
