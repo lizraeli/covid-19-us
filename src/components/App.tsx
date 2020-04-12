@@ -22,6 +22,8 @@ import type { CountyData, Option, StateData } from "../types";
 enum ViewMode {
   TOTAL_CASES = "TOTAL_CASES",
   NEW_CASES = "NEW_CASES",
+  TOTAL_DEATHS = "TOTAL_DEATHS",
+  NEW_DEATHS = "NEW_DEATS",
 }
 
 const viewModeOptions: Option[] = [
@@ -32,6 +34,14 @@ const viewModeOptions: Option[] = [
   {
     label: "New Cases",
     value: ViewMode.NEW_CASES,
+  },
+  {
+    label: "Total Deaths",
+    value: ViewMode.TOTAL_DEATHS,
+  },
+  {
+    label: "New Deaths",
+    value: ViewMode.NEW_DEATHS,
   },
 ];
 
@@ -64,6 +74,8 @@ function App() {
     stateOptions,
     totalUSCasesChartData,
     newUSCasesChartData,
+    totalUSDeathsChartData,
+    newUSDeathsChartData,
     totalCasesForStateChartData,
     newCasesForStateChartData,
   } = useProcessedStateData(stateDataParseState, selectedState);
@@ -114,26 +126,6 @@ function App() {
     );
   }
 
-  const getTotalCasesChartData = () => {
-    if (!selectedState) {
-      return totalUSCasesChartData;
-    }
-    if (selectedCounty) {
-      return totalCasesForCountyChartData;
-    }
-    return totalCasesForStateChartData;
-  };
-
-  const getNewCasesChartData = () => {
-    if (!selectedState) {
-      return newUSCasesChartData;
-    }
-    if (selectedCounty) {
-      return newCasesForCountyChartData;
-    }
-    return newCasesForStateChartData;
-  };
-
   const getHeading = () => {
     if (!selectedState) {
       return `${selectedViewMode.label} in the US`;
@@ -144,10 +136,62 @@ function App() {
       : `${selectedViewMode.label} in ${selectedState.label}`;
   };
 
-  const chartData =
-    selectedViewMode.value === ViewMode.TOTAL_CASES
-      ? getTotalCasesChartData()
-      : getNewCasesChartData();
+  const getChartData = () => {
+    switch (selectedViewMode.value) {
+      case ViewMode.TOTAL_CASES: {
+        if (!selectedState) {
+          return totalUSCasesChartData;
+        }
+
+        if (selectedCounty) {
+          return totalCasesForCountyChartData;
+        }
+
+        return totalCasesForStateChartData;
+      }
+
+      case ViewMode.NEW_CASES: {
+        if (!selectedState) {
+          return newUSCasesChartData;
+        }
+
+        if (selectedCounty) {
+          return newCasesForCountyChartData;
+        }
+
+        return newCasesForStateChartData;
+      }
+
+      case ViewMode.TOTAL_DEATHS: {
+        if (!selectedState) {
+          return totalUSDeathsChartData;
+        }
+
+        if (selectedCounty) {
+          return newCasesForCountyChartData;
+        }
+
+        return newCasesForStateChartData;
+      }
+
+      case ViewMode.NEW_DEATHS: {
+        if (!selectedState) {
+          return newUSDeathsChartData;
+        }
+
+        if (selectedCounty) {
+          return newCasesForCountyChartData;
+        }
+
+        return newCasesForStateChartData;
+      }
+
+      default:
+        return totalUSCasesChartData;
+    }
+  };
+
+  const chartData = getChartData();
 
   const isParseSuccess =
     countyDataParseState.status === ParseStatus.SUCCESS &&

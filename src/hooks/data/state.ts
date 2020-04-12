@@ -26,20 +26,7 @@ export const useProcessedStateData = (
     [dataRows]
   );
 
-  const { totalUSCasesChartData, newUSCasesChartData } = useMemo(() => {
-    const { dateRowsUS, totalCasesRowsUS, newCasesRowsUS } = calcDataForUS(
-      filteredDataRows || []
-    );
-    const totalUSCasesChartData = makeChartData(
-      "US",
-      dateRowsUS,
-      totalCasesRowsUS
-    );
-    const newUSCasesChartData = makeChartData("US", dateRowsUS, newCasesRowsUS);
-
-    return { totalUSCasesChartData, newUSCasesChartData };
-  }, [filteredDataRows]);
-
+  // create state options
   const { stateDataDict, stateOptions } = useMemo(() => {
     const stateDataDict = filteredDataRows
       ? groupBy(filteredDataRows, (stateData) => stateData.state)
@@ -49,6 +36,48 @@ export const useProcessedStateData = (
     return { stateDataDict, stateOptions };
   }, [filteredDataRows]);
 
+  // Calculate data series for the US
+  const {
+    totalUSCasesChartData,
+    newUSCasesChartData,
+    totalUSDeathsChartData,
+    newUSDeathsChartData,
+  } = useMemo(() => {
+    const {
+      dateRowsUS,
+      totalCasesRowsUS,
+      newCasesRowsUS,
+      totalDeathsRowsUS,
+      newDeathRowsUS,
+    } = calcDataForUS(filteredDataRows || []);
+
+    const totalUSCasesChartData = makeChartData(
+      "US",
+      dateRowsUS,
+      totalCasesRowsUS
+    );
+    const newUSCasesChartData = makeChartData("US", dateRowsUS, newCasesRowsUS);
+
+    const totalUSDeathsChartData = makeChartData(
+      "US",
+      dateRowsUS,
+      totalDeathsRowsUS
+    );
+    const newUSDeathsChartData = makeChartData(
+      "US",
+      dateRowsUS,
+      newDeathRowsUS
+    );
+
+    return {
+      totalUSCasesChartData,
+      newUSCasesChartData,
+      totalUSDeathsChartData,
+      newUSDeathsChartData,
+    };
+  }, [filteredDataRows]);
+
+  // calculate data series for all states
   const {
     totalCasesForStateChartData,
     newCasesForStateChartData,
@@ -56,6 +85,7 @@ export const useProcessedStateData = (
     const selectedStateDataRows = selectedState
       ? stateDataDict[selectedState.value]
       : [];
+
     const { dateRows, totalCasesRows, newCasesRows } = processCaseDataRows(
       selectedStateDataRows
     );
@@ -80,6 +110,8 @@ export const useProcessedStateData = (
     stateOptions,
     totalUSCasesChartData,
     newUSCasesChartData,
+    totalUSDeathsChartData,
+    newUSDeathsChartData,
     totalCasesForStateChartData,
     newCasesForStateChartData,
   };

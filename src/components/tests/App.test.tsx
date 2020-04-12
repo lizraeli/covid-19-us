@@ -237,4 +237,43 @@ describe("App", () => {
       data: countyDataCases,
     });
   });
+
+
+  test("View total deaths for US, state and county", async () => {
+    xhrMock.get(US_STATES_CSV_URL, {
+      body: csvStateData,
+    });
+
+    xhrMock.get(US_COUNTIES_CSV_URL, {
+      body: csvCountyData,
+    });
+
+    const App = require("../App").default;
+    const { getByTestId } = render(<App />);
+
+    // Mode dropdown will be rendered once the CSV is fetched and parsed
+    const modeSelect = await waitForElement(() => getByTestId("mode-select"));
+
+    // Selecting "Total Deaths"
+    fireEvent.change(modeSelect, {
+      target: { value: "TOTAL_DEATHS" },
+    });
+
+    // Initially will show data for the US
+    expect(getByTestId("heading").textContent).toEqual("Total Deaths in the US");
+
+    // assertions about data provided to chart
+    const { totalDeathsRowsUS, dateRowsUS } = calcDataForUS(stateData);
+
+    let mockChartCall;
+    // Will show total cases by default. This is tested elsewhere.
+    // assertions about data provided to chart
+    mockChartCall = mockChart.mock.calls[1][0];
+    expect(mockChartCall.options.xaxis.categories).toEqual(dateRowsUS);
+    expect(mockChartCall.series[0]).toEqual({
+      name: "US",
+      data: totalDeathsRowsUS,
+    });
+
+  });
 });

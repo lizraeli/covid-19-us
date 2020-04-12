@@ -195,7 +195,7 @@ describe("calcDataForUS", () => {
         date: "2020-03-27",
         state: "New York",
         cases: 500,
-        deaths: 0,
+        deaths: 10,
       },
       {
         date: "2020-03-28",
@@ -224,11 +224,19 @@ describe("calcDataForUS", () => {
         deaths: 25,
       },
     ];
-    const { dateRowsUS, totalCasesRowsUS, newCasesRowsUS } = calcDataForUS(
-      stateCaseData
-    );
+
+    const {
+      dateRowsUS,
+      totalCasesRowsUS,
+      newCasesRowsUS,
+      totalDeathsRowsUS,
+      newDeathRowsUS,
+    } = calcDataForUS(stateCaseData);
+
     expect(dateRowsUS).toEqual(["2020-03-27", "2020-03-28", "2020-03-29"]);
     expect(totalCasesRowsUS).toEqual([500, 3000, 4500]);
     expect(newCasesRowsUS).toEqual([500, 2500, 1500]);
+    expect(totalDeathsRowsUS).toEqual([10, 30, 40])
+    expect(newDeathRowsUS).toEqual([10, 20, 10])
   });
 });
