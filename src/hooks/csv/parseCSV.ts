@@ -14,7 +14,7 @@ export const useParseCSV = <T>(url: string) => {
 
   const fetchAndParseData = useCallback(() => {
     setParseState({
-      status: ParseStatus.ACTIVE,
+      status: ParseStatus.PARSING,
     });
 
     ParseCSV.parse(url, {

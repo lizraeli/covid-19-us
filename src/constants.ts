@@ -1,7 +1,7 @@
 export enum ParseStatus {
   UNDEFINED = "UNDEFINED",
   SUCCESS = "SUCCESS",
-  ACTIVE = "ACTIVE",
+  PARSING = "PARSING",
   ERROR = "ERROR",
 }
 

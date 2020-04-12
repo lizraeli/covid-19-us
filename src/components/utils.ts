@@ -14,6 +14,6 @@ export const getErrorFromParseStates = (...parseStates: ParseState<any>[]) => {
 
 export const isAnyParseStateActive = (...parseStates: ParseState<any>[]) => {
   return parseStates.some(
-    (parseState) => parseState.status === ParseStatus.ACTIVE
+    (parseState) => [ParseStatus.PARSING, ParseStatus.UNDEFINED].includes(parseState.status)
   );
 };

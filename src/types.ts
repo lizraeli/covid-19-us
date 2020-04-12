@@ -45,5 +45,5 @@ export interface Option {
 export type ParseState<T> =
   | { status: ParseStatus.SUCCESS; data: T[] }
   | { status: ParseStatus.UNDEFINED }
-  | { status: ParseStatus.ACTIVE }
+  | { status: ParseStatus.PARSING }
   | { status: ParseStatus.ERROR; error: string };

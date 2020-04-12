@@ -103,74 +103,70 @@ function App() {
     setSelectedCounty(selectedCounty);
   };
 
-  const getHeading = () => {
-    if (!selectedState) {
-      return `${selectedViewMode.label} in the US`;
-    }
-
-    return selectedCounty
-      ? `${selectedViewMode.label} in ${selectedCounty.label}, ${selectedState.label}`
-      : `${selectedViewMode.label} in ${selectedState.label}`;
-  };
-
-  const getChartData = () => {
-    switch (selectedViewMode.value) {
-      case ViewMode.TOTAL_CASES: {
-        if (selectedCounty) {
-          return totalCasesForCountyChartData;
-        }
-
-        if (selectedState) {
-          return totalCasesForStateChartData;
-        }
-
-        return totalUSCasesChartData;
-      }
-
-      case ViewMode.NEW_CASES: {
-        if (selectedCounty) {
-          return newCasesForCountyChartData;
-        }
-
-        if (selectedState) {
-          return newCasesForStateChartData;
-        }
-
-        return newUSCasesChartData;
-      }
-
-      case ViewMode.TOTAL_DEATHS: {
-        if (selectedCounty) {
-          return totalDeathsForCountyChartData;
-        }
-
-        if (selectedState) {
-          return totalDeathsForStateChartData;
-        }
-
-        return totalUSDeathsChartData;
-      }
-
-      case ViewMode.NEW_DEATHS: {
-        if (selectedCounty) {
-          return newDeathsForCountyChartData;
-        }
-
-        if (selectedState) {
-          return newDeathsForStateChartData;
-        }
-
-        return newUSDeathsChartData;
-      }
-    }
-  };
-
   const renderContent = () => {
-    const chartData = getChartData();
+    const getChartData = () => {
+      switch (selectedViewMode.value) {
+        case ViewMode.TOTAL_CASES: {
+          if (selectedCounty) {
+            return totalCasesForCountyChartData;
+          }
 
-    const isParseSuccess =
-      countyDataParseState.status === ParseStatus.SUCCESS &&
-      stateDataParseState.status === ParseStatus.SUCCESS;
+          if (selectedState) {
+            return totalCasesForStateChartData;
+          }
+
+          return totalUSCasesChartData;
+        }
+
+        case ViewMode.NEW_CASES: {
+          if (selectedCounty) {
+            return newCasesForCountyChartData;
+          }
+
+          if (selectedState) {
+            return newCasesForStateChartData;
+          }
+
+          return newUSCasesChartData;
+        }
+
+        case ViewMode.TOTAL_DEATHS: {
+          if (selectedCounty) {
+            return totalDeathsForCountyChartData;
+          }
+
+          if (selectedState) {
+            return totalDeathsForStateChartData;
+          }
+
+          return totalUSDeathsChartData;
+        }
+
+        case ViewMode.NEW_DEATHS: {
+          if (selectedCounty) {
+            return newDeathsForCountyChartData;
+          }
+
+          if (selectedState) {
+            return newDeathsForStateChartData;
+          }
+
+          return newUSDeathsChartData;
+        }
+      }
+    };
+
+    const getHeading = () => {
+      if (!selectedState) {
+        return `${selectedViewMode.label} in the US`;
+      }
+
+      return selectedCounty
+        ? `${selectedViewMode.label} in ${selectedCounty.label}, ${selectedState.label}`
+        : `${selectedViewMode.label} in ${selectedState.label}`;
+    };
+
+    const chartData = getChartData();
 
     return (
       <>
@@ -215,16 +211,14 @@ function App() {
         </div>
         <div className="flex-column-container">
           <div className="chart-container">
-            {isParseSuccess && (
-              <Chart
-                data-testid="chart"
-                options={chartData.options}
-                series={chartData.series}
-                type="bar"
-                height={380}
-                width={1200}
-              />
-            )}
+            <Chart
+              data-testid="chart"
+              options={chartData.options}
+              series={chartData.series}
+              type="bar"
+              height={380}
+              width={1200}
+            />
           </div>
         </div>
       </>
@@ -236,7 +230,7 @@ function App() {
     stateDataParseState
   );
 
-  const isActive = isAnyParseStateActive(
+  const isLoading = isAnyParseStateActive(
     countyDataParseState,
     stateDataParseState
   );
@@ -248,7 +242,7 @@ function App() {
         <div className="error-container">
           <div data-testid="error-message"> {error} </div>
         </div>
-      ) : isActive ? (
+      ) : isLoading ? (
         <div className="loader-container">
           <div> Loading Data...</div>
           <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />
