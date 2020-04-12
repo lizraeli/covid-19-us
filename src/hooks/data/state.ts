@@ -7,8 +7,8 @@ import {
   createOptionsFromDataDict,
   getDataAfterStartDate,
   processCaseDataRows,
-  makeChartData,
 } from "./utils";
+import { makeChartData } from "../../utils/chart";
 
 import type { ParseState, Option, StateData } from "../../types";
 
@@ -30,7 +30,11 @@ export const useProcessedStateData = (
     const { dateRowsUS, totalCasesRowsUS, newCasesRowsUS } = calcDataForUS(
       filteredDataRows || []
     );
-    const totalUSCasesChartData = makeChartData("US", dateRowsUS, totalCasesRowsUS);
+    const totalUSCasesChartData = makeChartData(
+      "US",
+      dateRowsUS,
+      totalCasesRowsUS
+    );
     const newUSCasesChartData = makeChartData("US", dateRowsUS, newCasesRowsUS);
 
     return { totalUSCasesChartData, newUSCasesChartData };

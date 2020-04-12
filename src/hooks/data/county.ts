@@ -5,9 +5,10 @@ import { ParseStatus, START_DATE } from "../../constants";
 import {
   createOptionsFromDataDict,
   processCaseDataRows,
-  makeChartData,
   getDataAfterStartDate,
 } from "./utils";
+import { makeChartData } from "../../utils/chart";
+
 import type {
   CountyDataByStateDict,
   ParseState,
@@ -128,6 +129,7 @@ export const useProcessedCountyData = (
       dateRows,
       newCasesRows
     );
+
     return { countyOptions, totalCasesChartData, newCasesChartData };
   }, [stateDictWithCountyData, selectedState, selectedCounty]);
 
