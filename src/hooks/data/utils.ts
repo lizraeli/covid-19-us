@@ -3,7 +3,7 @@ import groupBy from "lodash/groupBy";
 
 import type { CaseData, DataDict } from "../../types";
 
-export const map = <T, K extends keyof T>(array: T[], key: K) =>
+export const mapToProp = <T, K extends keyof T>(array: T[], key: K) =>
   array.map((element) => element[key]);
 
 export const getDataAfterStartDate = <T extends CaseData>(
@@ -24,8 +24,8 @@ export const createOptionsFromDataDict = <T extends CaseData>(
 };
 
 export const processCaseDataRows = (caseDataRows: CaseData[]) => {
-  const dateRows = map(caseDataRows, "date");
-  const totalCasesRows = map(caseDataRows, "cases");
+  const dateRows = mapToProp(caseDataRows, "date");
+  const totalCasesRows = mapToProp(caseDataRows, "cases");
   const newCasesRows = calcNewCasesRows(totalCasesRows);
 
   return {
