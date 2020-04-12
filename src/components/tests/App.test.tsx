@@ -7,7 +7,7 @@ import "./setup";
 import { US_STATES_CSV_URL, US_COUNTIES_CSV_URL } from "../../constants";
 import { stateData, countyData } from "./fixtures/data";
 import {
-  calcNewCasesRowsFromTotalCasesRows,
+  calcNewCasesRows,
   calcDataForUS,
 } from "../../hooks/data/utils";
 
@@ -197,7 +197,7 @@ describe("App", () => {
     const stateDataTotalCasesRows = dataForState.map(
       (caseData) => caseData.cases
     );
-    const stateDataNewCases = calcNewCasesRowsFromTotalCasesRows(
+    const stateDataNewCases = calcNewCasesRows(
       stateDataTotalCasesRows
     );
 
@@ -226,7 +226,7 @@ describe("App", () => {
     const countyTotalCasesRows = dataForCounty.map(
       (caseData) => caseData.cases
     );
-    const countyDataCases = calcNewCasesRowsFromTotalCasesRows(
+    const countyDataCases = calcNewCasesRows(
       countyTotalCasesRows
     );
 

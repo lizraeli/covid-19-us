@@ -26,7 +26,7 @@ export const createOptionsFromDataDict = <T extends CaseData>(
 export const processCaseDataRows = (caseDataRows: CaseData[]) => {
   const dateRows = map(caseDataRows, "date");
   const totalCasesRows = map(caseDataRows, "cases");
-  const newCasesRows = calcNewCasesRowsFromTotalCasesRows(totalCasesRows);
+  const newCasesRows = calcNewCasesRows(totalCasesRows);
 
   return {
     dateRows,
@@ -35,7 +35,7 @@ export const processCaseDataRows = (caseDataRows: CaseData[]) => {
   };
 };
 
-export const calcNewCasesRowsFromTotalCasesRows = (
+export const calcNewCasesRows = (
   totalCasesRows: number[]
 ) => {
   const newCasesRows = totalCasesRows.map((cases, index) => {
@@ -57,7 +57,7 @@ export const calcDataForUS = (caseDataRowsByState: CaseData[]) => {
   const totalCasesRowsUS = Object.values(dateDataDict).map((caseDataRows) =>
     caseDataRows.reduce((cases, data) => cases + data.cases, 0)
   );
-  const newCasesRowsUS = calcNewCasesRowsFromTotalCasesRows(totalCasesRowsUS);
+  const newCasesRowsUS = calcNewCasesRows(totalCasesRowsUS);
   const dateRowsUS = Object.keys(dateDataDict);
 
   return { dateRowsUS, totalCasesRowsUS, newCasesRowsUS };

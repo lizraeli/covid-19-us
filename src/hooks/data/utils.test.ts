@@ -1,14 +1,14 @@
 import {
   calcDataForUS,
-  calcNewCasesRowsFromTotalCasesRows,
+  calcNewCasesRows,
   getDataAfterStartDate,
 } from "./utils";
 import { CaseData } from "../../types";
 
-describe("calcNewCasesRowsFromTotalCasesRows", () => {
+describe("calcNewCasesRows", () => {
   const calcNewsCasesRows = (caseDataRows: CaseData[]) => {
     const totalCasesRows = caseDataRows.map((caseData) => caseData.cases);
-    return calcNewCasesRowsFromTotalCasesRows(totalCasesRows);
+    return calcNewCasesRows(totalCasesRows);
   };
 
   test("new cases every day", () => {
