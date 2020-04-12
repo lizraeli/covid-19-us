@@ -6,10 +6,9 @@ import ParseCSV from "papaparse";
 import "./setup";
 import { US_STATES_CSV_URL, US_COUNTIES_CSV_URL } from "../../constants";
 import { stateData, countyData } from "./fixtures/data";
-import {
-  calcNewCasesRows,
-  calcDataForUS,
-} from "../../hooks/data/utils";
+import { calcNewCasesRows, calcDataForUS } from "../../hooks/data/utils";
+
+import type { CaseData } from "../../types";
 
 // Mocking the chart component
 const mockChart = jest.fn((props: any) => (
@@ -19,8 +18,17 @@ const mockChart = jest.fn((props: any) => (
 jest.mock("react-apexcharts", () => jest.fn(mockChart));
 
 describe("App", () => {
+  const mapAndCalcNewDataRows = (
+    caseDataRows: CaseData[],
+    property: "cases" | "deaths"
+  ) => {
+    const totalCasesRows = caseDataRows.map((caseData) => caseData[property]);
+    return calcNewCasesRows(totalCasesRows);
+  };
+
   const csvStateData = ParseCSV.unparse(stateData);
   const csvCountyData = ParseCSV.unparse(countyData);
+
   beforeEach(() => {
     xhrMock.setup();
     mockChart.mockClear();
@@ -194,12 +202,7 @@ describe("App", () => {
       (caseData) => caseData.state === selectedState
     );
     const stateDataDateRows = dataForState.map((caseData) => caseData.date);
-    const stateDataTotalCasesRows = dataForState.map(
-      (caseData) => caseData.cases
-    );
-    const stateDataNewCases = calcNewCasesRows(
-      stateDataTotalCasesRows
-    );
+    const stateDataNewCases = mapAndCalcNewDataRows(dataForState, 'cases');
 
     mockChartCall = mockChart.mock.calls[2][0];
     expect(mockChartCall.options.xaxis.categories).toEqual(stateDataDateRows);
@@ -223,12 +226,7 @@ describe("App", () => {
       (data) => data.state === selectedState && data.county === selectedCounty
     );
     const countyDataDates = dataForCounty.map((data) => data.date);
-    const countyTotalCasesRows = dataForCounty.map(
-      (caseData) => caseData.cases
-    );
-    const countyDataCases = calcNewCasesRows(
-      countyTotalCasesRows
-    );
+    const countyDataCases = mapAndCalcNewDataRows(dataForCounty, 'cases');
 
     mockChartCall = mockChart.mock.calls[3][0];
     expect(mockChartCall.options.xaxis.categories).toEqual(countyDataDates);
@@ -237,7 +235,6 @@ describe("App", () => {
       data: countyDataCases,
     });
   });
-
 
   test("View total deaths for US, state and county", async () => {
     xhrMock.get(US_STATES_CSV_URL, {
@@ -260,7 +257,9 @@ describe("App", () => {
     });
 
     // Initially will show data for the US
-    expect(getByTestId("heading").textContent).toEqual("Total Deaths in the US");
+    expect(getByTestId("heading").textContent).toEqual(
+      "Total Deaths in the US"
+    );
 
     // assertions about data provided to chart
     const { totalDeathsRowsUS, dateRowsUS } = calcDataForUS(stateData);
@@ -275,5 +274,139 @@ describe("App", () => {
       data: totalDeathsRowsUS,
     });
 
+    // selecting a state from the state dropdown
+    const selectedState = "New York";
+    fireEvent.change(getByTestId("state-select"), {
+      target: { value: selectedState },
+    });
+
+    // assert heading content
+    expect(getByTestId("heading").textContent).toEqual(
+      "Total Deaths in New York"
+    );
+
+    // assertions about data provided to chart
+    const dataForState = stateData.filter(
+      (caseData) => caseData.state === selectedState
+    );
+    const stateDataDateRows = dataForState.map((caseData) => caseData.date);
+    const stateDataTotalDeaths = dataForState.map(
+      (caseData) => caseData.deaths
+    );
+
+    mockChartCall = mockChart.mock.calls[2][0];
+    expect(mockChartCall.options.xaxis.categories).toEqual(stateDataDateRows);
+    expect(mockChartCall.series[0]).toEqual({
+      name: selectedState,
+      data: stateDataTotalDeaths,
+    });
+
+    // selecting a county from the county dropdown
+    const selectedCounty = "Essex";
+    fireEvent.change(getByTestId("county-select"), {
+      target: { value: selectedCounty },
+    });
+    // assert heading content
+    expect(getByTestId("heading").textContent).toEqual(
+      "Total Deaths in Essex, New York"
+    );
+
+    // assertions about data provided to chart
+    const dataForCounty = countyData.filter(
+      (data) => data.state === selectedState && data.county === selectedCounty
+    );
+    const countyDataDates = dataForCounty.map((data) => data.date);
+    const countyDataDeaths = dataForCounty.map((data) => data.deaths);
+
+    mockChartCall = mockChart.mock.calls[3][0];
+    expect(mockChartCall.options.xaxis.categories).toEqual(countyDataDates);
+    expect(mockChartCall.series[0]).toEqual({
+      name: selectedCounty,
+      data: countyDataDeaths,
+    });
+  });
+
+  test("View new deaths for US, state and county", async () => {
+    xhrMock.get(US_STATES_CSV_URL, {
+      body: csvStateData,
+    });
+
+    xhrMock.get(US_COUNTIES_CSV_URL, {
+      body: csvCountyData,
+    });
+
+    const App = require("../App").default;
+    const { getByTestId } = render(<App />);
+
+    // Mode dropdown will be rendered once the CSV is fetched and parsed
+    const modeSelect = await waitForElement(() => getByTestId("mode-select"));
+    // Selecting "New Deaths"
+    fireEvent.change(modeSelect, {
+      target: { value: "NEW_DEATHS" },
+    });
+
+    // Initially will show data for the US
+    expect(getByTestId("heading").textContent).toEqual("New Deaths in the US");
+
+    // assertions about data provided to chart
+    const { newDeathRowsUS, dateRowsUS } = calcDataForUS(stateData);
+
+    let mockChartCall;
+    // Will show total cases by default. This is tested elsewhere.
+    mockChartCall = mockChart.mock.calls[1][0];
+    expect(mockChartCall.options.xaxis.categories).toEqual(dateRowsUS);
+    expect(mockChartCall.series[0]).toEqual({
+      name: "US",
+      data: newDeathRowsUS,
+    });
+
+    // selecting a state from the state dropdown
+    const selectedState = "New York";
+    fireEvent.change(getByTestId("state-select"), {
+      target: { value: selectedState },
+    });
+
+    // assert heading content
+    expect(getByTestId("heading").textContent).toEqual(
+      "New Deaths in New York"
+    );
+
+    // assertions about data provided to chart
+    const dataForState = stateData.filter(
+      (caseData) => caseData.state === selectedState
+    );
+    const stateDataDateRows = dataForState.map((caseData) => caseData.date);
+    const stateDataNewCases = mapAndCalcNewDataRows(dataForState, 'deaths');
+
+    mockChartCall = mockChart.mock.calls[2][0];
+    expect(mockChartCall.options.xaxis.categories).toEqual(stateDataDateRows);
+    expect(mockChartCall.series[0]).toEqual({
+      name: selectedState,
+      data: stateDataNewCases,
+    });
+
+    // selecting a county from the county dropdown
+    const selectedCounty = "Essex";
+    fireEvent.change(getByTestId("county-select"), {
+      target: { value: selectedCounty },
+    });
+    // assert heading content
+    expect(getByTestId("heading").textContent).toEqual(
+      "New Deaths in Essex, New York"
+    );
+
+    // assertions about data provided to chart
+    const dataForCounty = countyData.filter(
+      (data) => data.state === selectedState && data.county === selectedCounty
+    );
+    const countyDataDates = dataForCounty.map((data) => data.date);
+    const countyDataCases = mapAndCalcNewDataRows(dataForCounty, 'deaths');
+
+    mockChartCall = mockChart.mock.calls[3][0];
+    expect(mockChartCall.options.xaxis.categories).toEqual(countyDataDates);
+    expect(mockChartCall.series[0]).toEqual({
+      name: selectedCounty,
+      data: countyDataCases,
+    });
   });
 });

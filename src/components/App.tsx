@@ -23,10 +23,14 @@ enum ViewMode {
   TOTAL_CASES = "TOTAL_CASES",
   NEW_CASES = "NEW_CASES",
   TOTAL_DEATHS = "TOTAL_DEATHS",
-  NEW_DEATHS = "NEW_DEATS",
+  NEW_DEATHS = "NEW_DEATHS",
 }
 
-const viewModeOptions: Option[] = [
+interface ViewModeOption extends Option {
+  value: ViewMode;
+}
+
+const viewModeOptions: ViewModeOption[] = [
   {
     label: "Total Cases",
     value: ViewMode.TOTAL_CASES,
@@ -61,9 +65,11 @@ function App() {
   } = useParseCSV<StateData>(US_STATES_CSV_URL);
 
   const {
-    totalCasesChartData: totalCasesForCountyChartData,
-    newCasesChartData: newCasesForCountyChartData,
     countyOptions,
+    totalCasesForCountyChartData,
+    newCasesForCountyChartData,
+    totalDeathsForCountyChartData,
+    newDeathsForCountyChartData,
   } = useProcessedCountyData(
     countyDataParseState,
     selectedState,
@@ -78,6 +84,8 @@ function App() {
     newUSDeathsChartData,
     totalCasesForStateChartData,
     newCasesForStateChartData,
+    totalDeathsForStateChartData,
+    newDeathsForStateChartData,
   } = useProcessedStateData(stateDataParseState, selectedState);
 
   useEffect(() => {
@@ -139,55 +147,52 @@ function App() {
   const getChartData = () => {
     switch (selectedViewMode.value) {
       case ViewMode.TOTAL_CASES: {
-        if (!selectedState) {
-          return totalUSCasesChartData;
-        }
-
         if (selectedCounty) {
           return totalCasesForCountyChartData;
         }
 
-        return totalCasesForStateChartData;
+        if (selectedState) {
+          return totalCasesForStateChartData;
+        }
+
+        return totalUSCasesChartData;
       }
 
       case ViewMode.NEW_CASES: {
-        if (!selectedState) {
-          return newUSCasesChartData;
-        }
-
         if (selectedCounty) {
           return newCasesForCountyChartData;
         }
 
-        return newCasesForStateChartData;
+        if (selectedState) {
+          return newCasesForStateChartData;
+        }
+
+        return newUSCasesChartData;
       }
 
       case ViewMode.TOTAL_DEATHS: {
-        if (!selectedState) {
-          return totalUSDeathsChartData;
-        }
-
         if (selectedCounty) {
-          return newCasesForCountyChartData;
+          return totalDeathsForCountyChartData;
         }
 
-        return newCasesForStateChartData;
+        if (selectedState) {
+          return totalDeathsForStateChartData;
+        }
+
+        return totalUSDeathsChartData;
       }
 
       case ViewMode.NEW_DEATHS: {
-        if (!selectedState) {
-          return newUSDeathsChartData;
-        }
-
         if (selectedCounty) {
-          return newCasesForCountyChartData;
+          return newDeathsForCountyChartData;
         }
 
-        return newCasesForStateChartData;
-      }
+        if (selectedState) {
+          return newDeathsForStateChartData;
+        }
 
-      default:
-        return totalUSCasesChartData;
+        return newUSDeathsChartData;
+      }
     }
   };
 
@@ -227,7 +232,9 @@ function App() {
         <Select
           value={selectedViewMode}
           options={viewModeOptions}
-          onChange={(selected) => setSelectedViewMode(selected as Option)}
+          onChange={(selected) =>
+            setSelectedViewMode(selected as ViewModeOption)
+          }
           placeholder="Select View Mode"
           id="mode-select"
         />

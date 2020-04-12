@@ -6,7 +6,7 @@ import {
 import { CaseData } from "../../types";
 
 describe("calcNewCasesRows", () => {
-  const calcNewsCasesRows = (caseDataRows: CaseData[]) => {
+  const mapAndCalcNewCasesRows = (caseDataRows: CaseData[]) => {
     const totalCasesRows = caseDataRows.map((caseData) => caseData.cases);
     return calcNewCasesRows(totalCasesRows);
   };
@@ -32,7 +32,7 @@ describe("calcNewCasesRows", () => {
       },
     ];
 
-    expect(calcNewsCasesRows(data)).toEqual([10, 20, 10]);
+    expect(mapAndCalcNewCasesRows(data)).toEqual([10, 20, 10]);
   });
 
   test("no cases on day 1", () => {
@@ -56,7 +56,7 @@ describe("calcNewCasesRows", () => {
       },
     ];
 
-    expect(calcNewsCasesRows(data)).toEqual([0, 20, 10]);
+    expect(mapAndCalcNewCasesRows(data)).toEqual([0, 20, 10]);
   });
 
   test("no new cases on day 3", () => {
@@ -80,7 +80,7 @@ describe("calcNewCasesRows", () => {
       },
     ];
 
-    expect(calcNewsCasesRows(data)).toEqual([10, 10, 0]);
+    expect(mapAndCalcNewCasesRows(data)).toEqual([10, 10, 0]);
   });
 
   test("no cases on any day", () => {
@@ -104,7 +104,7 @@ describe("calcNewCasesRows", () => {
       },
     ];
 
-    expect(calcNewsCasesRows(data)).toEqual([0, 0, 0]);
+    expect(mapAndCalcNewCasesRows(data)).toEqual([0, 0, 0]);
   });
 });
 

@@ -16,21 +16,6 @@ import type {
   CountyData,
 } from "../../types";
 
-export const getSelectedCountyData = (
-  CountyDataByStateDict: CountyDataByStateDict,
-  selectedState: Option | null,
-  selectedCounty: Option | null
-) => {
-  const countyDataByStateDict = selectedState
-    ? CountyDataByStateDict[selectedState.value]
-    : {};
-  const countyData = selectedCounty
-    ? countyDataByStateDict[selectedCounty.value]
-    : [];
-
-  return countyData;
-};
-
 export const createCountyOptions = (
   countyDataByStateDict: CountyDataByStateDict,
   selectedState: Option | null
@@ -99,8 +84,10 @@ export const useProcessedCountyData = (
 
   const {
     countyOptions,
-    totalCasesChartData,
-    newCasesChartData,
+    totalCasesForCountyChartData,
+    newCasesForCountyChartData,
+    totalDeathsForCountyChartData,
+    newDeathsForCountyChartData,
   } = useMemo(() => {
     const countyOptions = createCountyOptions(
       stateDictWithCountyData,
@@ -114,28 +101,49 @@ export const useProcessedCountyData = (
       ? countyDataInStateDict[selectedCounty.value] ?? []
       : [];
 
-    const { dateRows, totalCasesRows, newCasesRows } = processCaseDataRows(
-      selectedCountyDataRows
-    );
+    const {
+      dateRows,
+      totalCasesRows,
+      newCasesRows,
+      totalDeathsRows,
+      newDeathsRows,
+    } = processCaseDataRows(selectedCountyDataRows);
 
-    const totalCasesChartData = makeChartData(
+    const totalCasesForCountyChartData = makeChartData(
       selectedCounty?.value,
       dateRows,
       totalCasesRows
     );
-
-    const newCasesChartData = makeChartData(
+    const newCasesForCountyChartData = makeChartData(
       selectedCounty?.value,
       dateRows,
       newCasesRows
     );
+    const totalDeathsForCountyChartData = makeChartData(
+      selectedCounty?.value,
+      dateRows,
+      totalDeathsRows
+    );
+    const newDeathsForCountyChartData = makeChartData(
+      selectedCounty?.value,
+      dateRows,
+      newDeathsRows
+    );
 
-    return { countyOptions, totalCasesChartData, newCasesChartData };
+    return {
+      countyOptions,
+      totalCasesForCountyChartData,
+      newCasesForCountyChartData,
+      totalDeathsForCountyChartData,
+      newDeathsForCountyChartData,
+    };
   }, [stateDictWithCountyData, selectedState, selectedCounty]);
 
   return {
     countyOptions,
-    totalCasesChartData,
-    newCasesChartData,
+    totalCasesForCountyChartData,
+    newCasesForCountyChartData,
+    totalDeathsForCountyChartData,
+    newDeathsForCountyChartData,
   };
 };

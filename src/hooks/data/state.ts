@@ -81,14 +81,21 @@ export const useProcessedStateData = (
   const {
     totalCasesForStateChartData,
     newCasesForStateChartData,
+    totalDeathsForStateChartData,
+    newDeathsForStateChartData
   } = useMemo(() => {
     const selectedStateDataRows = selectedState
       ? stateDataDict[selectedState.value]
       : [];
 
-    const { dateRows, totalCasesRows, newCasesRows } = processCaseDataRows(
-      selectedStateDataRows
-    );
+    const {
+      dateRows,
+      totalCasesRows,
+      newCasesRows,
+      totalDeathsRows,
+      newDeathsRows,
+    } = processCaseDataRows(selectedStateDataRows);
+
     const totalCasesForStateChartData = makeChartData(
       selectedState?.value,
       dateRows,
@@ -99,10 +106,22 @@ export const useProcessedStateData = (
       dateRows,
       newCasesRows
     );
+    const totalDeathsForStateChartData = makeChartData(
+      selectedState?.value,
+      dateRows,
+      totalDeathsRows
+    );
+    const newDeathsForStateChartData = makeChartData(
+      selectedState?.value,
+      dateRows,
+      newDeathsRows
+    );
 
     return {
       totalCasesForStateChartData,
       newCasesForStateChartData,
+      totalDeathsForStateChartData,
+      newDeathsForStateChartData
     };
   }, [selectedState, stateDataDict]);
 
@@ -114,5 +133,7 @@ export const useProcessedStateData = (
     newUSDeathsChartData,
     totalCasesForStateChartData,
     newCasesForStateChartData,
+    totalDeathsForStateChartData,
+    newDeathsForStateChartData
   };
 };

@@ -27,11 +27,15 @@ export const processCaseDataRows = (caseDataRows: CaseData[]) => {
   const dateRows = mapToProp(caseDataRows, "date");
   const totalCasesRows = mapToProp(caseDataRows, "cases");
   const newCasesRows = calcNewCasesRows(totalCasesRows);
+  const totalDeathsRows = mapToProp(caseDataRows, "deaths");
+  const newDeathsRows = calcNewCasesRows(totalDeathsRows);
 
   return {
     dateRows,
     totalCasesRows,
     newCasesRows,
+    totalDeathsRows,
+    newDeathsRows
   };
 };
 
