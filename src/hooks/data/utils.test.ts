@@ -1,7 +1,18 @@
-import { calcNewCases, getDataAfterStartDate, calcDataForUS } from "./utils";
+import {
+  calcNewCasesRowsFromTotalCasesRows,
+  map,
+  getDataAfterStartDate,
+  calcDataForUS,
+} from "./utils";
+import { CaseData } from "../../types";
 
-describe("calcNewCases", () => {
-  test("calcNewCases with new cases every day", () => {
+describe("calcNewCasesRowsFromTotalCasesRows", () => {
+  const calcNewsCasesRows = (data: CaseData[]) => {
+    const totalCasesRows = map(data, "cases");
+    return calcNewCasesRowsFromTotalCasesRows(totalCasesRows);
+  };
+
+  test("new cases every day", () => {
     const data = [
       {
         date: "2020-03-28",
@@ -22,10 +33,10 @@ describe("calcNewCases", () => {
       },
     ];
 
-    expect(calcNewCases(data)).toEqual([10, 20, 10]);
+    expect(calcNewsCasesRows(data)).toEqual([10, 20, 10]);
   });
 
-  test("calcNewCases with no cases on day 1", () => {
+  test("no cases on day 1", () => {
     const data = [
       {
         date: "2020-03-28",
@@ -46,10 +57,10 @@ describe("calcNewCases", () => {
       },
     ];
 
-    expect(calcNewCases(data)).toEqual([0, 20, 10]);
+    expect(calcNewsCasesRows(data)).toEqual([0, 20, 10]);
   });
 
-  test("calcNewCases with no new cases on day 3", () => {
+  test("no new cases on day 3", () => {
     const data = [
       {
         date: "2020-03-28",
@@ -70,10 +81,10 @@ describe("calcNewCases", () => {
       },
     ];
 
-    expect(calcNewCases(data)).toEqual([10, 10, 0]);
+    expect(calcNewsCasesRows(data)).toEqual([10, 10, 0]);
   });
 
-  test("calcNewCases with no cases on any day", () => {
+  test("no cases on any day", () => {
     const data = [
       {
         date: "2020-03-28",
@@ -94,12 +105,12 @@ describe("calcNewCases", () => {
       },
     ];
 
-    expect(calcNewCases(data)).toEqual([0, 0, 0]);
+    expect(calcNewsCasesRows(data)).toEqual([0, 0, 0]);
   });
 });
 
 describe("getDataAfterStartDate", () => {
-  test("getDataAfterStartDate with start date before first day", () => {
+  test("start date before first day", () => {
     const data = [
       {
         date: "2020-03-28",
@@ -123,7 +134,7 @@ describe("getDataAfterStartDate", () => {
     expect(getDataAfterStartDate(data, "2020-03-27")).toEqual(data);
   });
 
-  test("getDataAfterStartDate with early start date equal to first day", () => {
+  test("start date equal to first day", () => {
     const data = [
       {
         date: "2020-03-28",
@@ -147,7 +158,7 @@ describe("getDataAfterStartDate", () => {
     expect(getDataAfterStartDate(data, "2020-03-28")).toEqual(data.slice(1));
   });
 
-  test("getDataAfterStartDate with early start date equal to last day", () => {
+  test("start date equal to last day", () => {
     const data = [
       {
         date: "2020-03-28",
@@ -173,8 +184,8 @@ describe("getDataAfterStartDate", () => {
 });
 
 describe("calcDataForUS", () => {
-  test("data", () => {
-    const stateData = [
+  test("calcDataForUS", () => {
+    const stateCaseData = [
       {
         date: "2020-03-27",
         state: "New Jersey",
@@ -214,11 +225,11 @@ describe("calcDataForUS", () => {
         deaths: 25,
       },
     ];
-    const { dateRowsUS, totalUSCasesRows, newUSCasesRows } = calcDataForUS(
-      stateData
+    const { dateRowsUS, totalCasesRowsUS, newCasesRowsUS } = calcDataForUS(
+      stateCaseData
     );
     expect(dateRowsUS).toEqual(["2020-03-27", "2020-03-28", "2020-03-29"]);
-    expect(totalUSCasesRows).toEqual([500, 3000, 4500]);
-    expect(newUSCasesRows).toEqual([500, 2500, 1500]);
+    expect(totalCasesRowsUS).toEqual([500, 3000, 4500]);
+    expect(newCasesRowsUS).toEqual([500, 2500, 1500]);
   });
 });

@@ -6,7 +6,7 @@ import {
   calcDataForUS,
   createOptionsFromDataDict,
   getDataAfterStartDate,
-  mapCaseDataRows,
+  processCaseDataRows,
   makeChartData,
 } from "./utils";
 
@@ -27,11 +27,11 @@ export const useProcessedStateData = (
   );
 
   const { totalUSCasesChartData, newUSCasesChartData } = useMemo(() => {
-    const { dateRowsUS, totalUSCasesRows, newUSCasesRows } = calcDataForUS(
+    const { dateRowsUS, totalCasesRowsUS, newCasesRowsUS } = calcDataForUS(
       filteredDataRows || []
     );
-    const totalUSCasesChartData = makeChartData("US", dateRowsUS, totalUSCasesRows);
-    const newUSCasesChartData = makeChartData("US", dateRowsUS, newUSCasesRows);
+    const totalUSCasesChartData = makeChartData("US", dateRowsUS, totalCasesRowsUS);
+    const newUSCasesChartData = makeChartData("US", dateRowsUS, newCasesRowsUS);
 
     return { totalUSCasesChartData, newUSCasesChartData };
   }, [filteredDataRows]);
@@ -52,13 +52,13 @@ export const useProcessedStateData = (
     const selectedStateDataRows = selectedState
       ? stateDataDict[selectedState.value]
       : [];
-    const { dateRows, casesRows, newCasesRows } = mapCaseDataRows(
+    const { dateRows, totalCasesRows, newCasesRows } = processCaseDataRows(
       selectedStateDataRows
     );
     const totalCasesForStateChartData = makeChartData(
       selectedState?.value,
       dateRows,
-      casesRows
+      totalCasesRows
     );
     const newCasesForStateChartData = makeChartData(
       selectedState?.value,

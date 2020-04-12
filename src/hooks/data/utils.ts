@@ -1,8 +1,12 @@
 import moment from "moment";
 import groupBy from "lodash/groupBy";
+import mapValues from "lodash/mapValues";
 
 import type { CaseData, DataDict } from "../../types";
 import type { ApexOptions } from "apexcharts";
+
+export const map = <T, K extends keyof T>(array: T[], key: K) =>
+  array.map((element) => element[key]);
 
 export const getDataAfterStartDate = <T extends CaseData>(
   dataRows: T[] | null,
@@ -21,45 +25,44 @@ export const createOptionsFromDataDict = <T extends CaseData>(
   return options;
 };
 
-export const calcNewCases = (dataRows: CaseData[]) => {
-  return dataRows.map((data, index) => {
-    const isFirstElement = index === 0;
-    const prevCases = isFirstElement ? 0 : dataRows[index - 1].cases;
-    const newCases = data.cases - prevCases;
-
-    return newCases;
-  });
-};
-
-export const mapCaseDataRows = (dataRows: CaseData[]) => {
-  const dateRows = dataRows.map((data) => data.date);
-  const casesRows = dataRows.map((stateData) => stateData.cases);
-  const newCasesRows = calcNewCases(dataRows);
+export const processCaseDataRows = (caseDataRows: CaseData[]) => {
+  const dateRows = map(caseDataRows, "date");
+  const totalCasesRows = map(caseDataRows, "cases");
+  const newCasesRows = calcNewCasesRowsFromTotalCasesRows(totalCasesRows);
 
   return {
     dateRows,
-    casesRows,
+    totalCasesRows,
     newCasesRows,
   };
 };
 
-export const calcDataForUS = (dataRows: CaseData[]) => {
-  const dateDataDict = dataRows ? groupBy(dataRows, (data) => data.date) : {};
-
-  const dateRowsUS = Object.keys(dateDataDict);
-  const totalUSCasesRows = Object.values(dateDataDict).map((caseDataRows) =>
-    caseDataRows.reduce((cases, data) => cases + data.cases, 0)
-  );
-
-  const newUSCasesRows = totalUSCasesRows.map((cases, index) => {
+export const calcNewCasesRowsFromTotalCasesRows = (
+  totalCasesRows: number[]
+) => {
+  const newCasesRows = totalCasesRows.map((cases, index) => {
     const isFirstElement = index === 0;
-    const prevCases = isFirstElement ? 0 : totalUSCasesRows[index - 1];
+    const prevCases = isFirstElement ? 0 : totalCasesRows[index - 1];
     const newCases = cases - prevCases;
 
     return newCases;
   });
 
-  return { dateRowsUS, totalUSCasesRows, newUSCasesRows };
+  return newCasesRows;
+};
+
+export const calcDataForUS = (caseDataRowsByState: CaseData[]) => {
+  const dateDataDict = caseDataRowsByState
+    ? groupBy(caseDataRowsByState, (data) => data.date)
+    : {};
+
+  const totalCasesRowsUS = Object.values(dateDataDict).map((caseDataRows) =>
+    caseDataRows.reduce((cases, data) => cases + data.cases, 0)
+  );
+  const newCasesRowsUS = calcNewCasesRowsFromTotalCasesRows(totalCasesRowsUS);
+  const dateRowsUS = Object.keys(dateDataDict);
+
+  return { dateRowsUS, totalCasesRowsUS, newCasesRowsUS };
 };
 
 const getNumberWithCommas = (num: number) => {

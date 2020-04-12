@@ -4,7 +4,7 @@ import groupBy from "lodash/groupBy";
 import { ParseStatus, START_DATE } from "../../constants";
 import {
   createOptionsFromDataDict,
-  mapCaseDataRows,
+  processCaseDataRows,
   makeChartData,
   getDataAfterStartDate,
 } from "./utils";
@@ -113,14 +113,14 @@ export const useProcessedCountyData = (
       ? countyDataInStateDict[selectedCounty.value] ?? []
       : [];
 
-    const { dateRows, casesRows, newCasesRows } = mapCaseDataRows(
+    const { dateRows, totalCasesRows, newCasesRows } = processCaseDataRows(
       selectedCountyDataRows
     );
 
     const totalCasesChartData = makeChartData(
       selectedCounty?.value,
       dateRows,
-      casesRows
+      totalCasesRows
     );
 
     const newCasesChartData = makeChartData(
