@@ -1,14 +1,26 @@
 import {
-  calcNewCasesRowsFromTotalCasesRows,
-  map,
-  getDataAfterStartDate,
   calcDataForUS,
+  calcNewCasesRowsFromTotalCasesRows,
+  getDataAfterStartDate,
+  getNumberWithCommas,
 } from "./utils";
 import { CaseData } from "../../types";
 
+describe("getNumberWithCommas", () => {
+  test("number with 3 digits", () => {
+    expect(getNumberWithCommas(123)).toEqual("123");
+  });
+  test("number with 6 digits", () => {
+    expect(getNumberWithCommas(123456)).toEqual("123,456");
+  });
+  test("number with 9 digits", () => {
+    expect(getNumberWithCommas(123456789)).toEqual("123,456,789");
+  });
+});
+
 describe("calcNewCasesRowsFromTotalCasesRows", () => {
-  const calcNewsCasesRows = (data: CaseData[]) => {
-    const totalCasesRows = map(data, "cases");
+  const calcNewsCasesRows = (caseDataRows: CaseData[]) => {
+    const totalCasesRows = caseDataRows.map((caseData) => caseData.cases);
     return calcNewCasesRowsFromTotalCasesRows(totalCasesRows);
   };
 

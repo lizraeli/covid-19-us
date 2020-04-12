@@ -65,7 +65,7 @@ export const calcDataForUS = (caseDataRowsByState: CaseData[]) => {
   return { dateRowsUS, totalCasesRowsUS, newCasesRowsUS };
 };
 
-const getNumberWithCommas = (num: number) => {
+export const getNumberWithCommas = (num: number) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
