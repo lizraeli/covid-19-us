@@ -23,7 +23,17 @@ export const useParseCSV = <T>(url: string) => {
       header: true,
       dynamicTyping: true,
       complete: (parseResult: DataParseResult<T> | null) => {
-        if (parseResult) {
+        // Set error if there is no result, 
+        // or there is a result with errors and no data
+        if (
+          !parseResult ||
+          (!parseResult.data.length && !!parseResult.errors.length)
+        ) {
+          setParseState({
+            status: ParseStatus.ERROR,
+            error: "Error parsing data",
+          });
+        } else if (parseResult && parseResult.data.length > 0) {
           setParseState({
             status: ParseStatus.SUCCESS,
             data: parseResult.data,
