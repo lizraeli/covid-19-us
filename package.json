@@ -41,6 +41,7 @@
       "src/**/*.{js,jsx,ts,tsx}",
       "!/node_modules/",
       "!src/index.tsx",
+      "!src/setupTests.tsx",
       "!src/types.ts",
       "!src/react-app-env.d.ts",
       "!src/serviceWorker.ts",
