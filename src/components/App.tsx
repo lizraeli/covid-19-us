@@ -1,9 +1,9 @@
-import logo from "./logo.svg";
 import "./App.css";
 
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import Chart from "react-apexcharts";
+import Loader from "react-loader-spinner";
 
 import {
   US_STATES_CSV_URL,
@@ -103,37 +103,6 @@ function App() {
     setSelectedCounty(selectedCounty);
   };
 
-  const error = getErrorFromParseStates(
-    countyDataParseState,
-    stateDataParseState
-  );
-
-  if (error) {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <div data-testid="error-message"> {error} </div>
-        </header>
-      </div>
-    );
-  }
-
-  const isActive = isAnyParseStateActive(
-    countyDataParseState,
-    stateDataParseState
-  );
-
-  if (isActive) {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <div> Loading Data </div>
-        </header>
-      </div>
-    );
-  }
-
   const getHeading = () => {
     if (!selectedState) {
       return `${selectedViewMode.label} in the US`;
@@ -196,68 +165,97 @@ function App() {
     }
   };
 
-  const chartData = getChartData();
+  const renderContent = () => {
+    const chartData = getChartData();
 
-  const isParseSuccess =
-    countyDataParseState.status === ParseStatus.SUCCESS &&
-    stateDataParseState.status === ParseStatus.SUCCESS;
+    const isParseSuccess =
+      countyDataParseState.status === ParseStatus.SUCCESS &&
+      stateDataParseState.status === ParseStatus.SUCCESS;
+
+    return (
+      <>
+        <div className="select-container">
+          <div>
+            <label htmlFor="state-select">State</label>
+            <Select
+              isClearable
+              value={selectedState}
+              options={stateOptions}
+              onChange={(selected) => handleStateSelect(selected as Option)}
+              placeholder="Select State"
+              id="state-select"
+            />
+          </div>
+          <div>
+            <label htmlFor="county-select">County</label>
+            <Select
+              isClearable
+              value={selectedCounty}
+              options={countyOptions}
+              onChange={(selected) => handleCountySelect(selected as Option)}
+              placeholder="Select County"
+              id="county-select"
+            />
+          </div>
+          <label htmlFor="mode-select">View Mode</label>
+          <Select
+            value={selectedViewMode}
+            options={viewModeOptions}
+            onChange={(selected) =>
+              setSelectedViewMode(selected as ViewModeOption)
+            }
+            placeholder="Select View Mode"
+            id="mode-select"
+          />
+        </div>
+        <div className="heading-container">
+          <h2 data-testid="heading" className="heading chart">
+            {getHeading()}
+          </h2>
+        </div>
+        <div className="flex-column-container">
+          <div className="chart-container">
+            {isParseSuccess && (
+              <Chart
+                data-testid="chart"
+                options={chartData.options}
+                series={chartData.series}
+                type="bar"
+                height={380}
+                width={1200}
+              />
+            )}
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  const error = getErrorFromParseStates(
+    countyDataParseState,
+    stateDataParseState
+  );
+
+  const isActive = isAnyParseStateActive(
+    countyDataParseState,
+    stateDataParseState
+  );
 
   return (
     <div className="main-container">
       <h2 className="heading">Covid-19 Case Tracker</h2>
-      <div className="select-container">
-        <div>
-          <label htmlFor="state-select">State</label>
-          <Select
-            isClearable
-            value={selectedState}
-            options={stateOptions}
-            onChange={(selected) => handleStateSelect(selected as Option)}
-            placeholder="Select State"
-            id="state-select"
-          />
+      {error ? (
+        <div className="error-container">
+          <div data-testid="error-message"> {error} </div>
         </div>
-        <div>
-          <label htmlFor="county-select">County</label>
-          <Select
-            isClearable
-            value={selectedCounty}
-            options={countyOptions}
-            onChange={(selected) => handleCountySelect(selected as Option)}
-            placeholder="Select County"
-            id="county-select"
-          />
+      ) : isActive ? (
+        <div className="loader-container">
+          <div> Loading Data...</div>
+          <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />
         </div>
-        <label htmlFor="mode-select">View Mode</label>
-        <Select
-          value={selectedViewMode}
-          options={viewModeOptions}
-          onChange={(selected) =>
-            setSelectedViewMode(selected as ViewModeOption)
-          }
-          placeholder="Select View Mode"
-          id="mode-select"
-        />
-      </div>
-      <div className="heading-container">
-        <h2 data-testid="heading" className="heading chart">
-          {getHeading()}
-        </h2>
-      </div>
-      <div className="flex-column-container">
-        <div className="chart-container">
-          {isParseSuccess && (
-            <Chart
-              data-testid="chart"
-              options={chartData.options}
-              series={chartData.series}
-              type="bar"
-              height={380}
-              width={1200}
-            />
-          )}
-        </div>
-      </div>
+      ) : (
+        renderContent()
+      )}
     </div>
   );
 }
