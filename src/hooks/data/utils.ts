@@ -50,9 +50,7 @@ export const calcNewCasesRows = (
 };
 
 export const calcDataForUS = (caseDataRowsByState: CaseData[]) => {
-  const dateDataDict = caseDataRowsByState
-    ? groupBy(caseDataRowsByState, (data) => data.date)
-    : {};
+  const dateDataDict = groupBy(caseDataRowsByState, (data) => data.date)
 
   const totalCasesRowsUS = Object.values(dateDataDict).map((caseDataRows) =>
     caseDataRows.reduce((cases, data) => cases + data.cases, 0)
