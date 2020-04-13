@@ -1,4 +1,8 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![Netlify Status](https://api.netlify.com/api/v1/badges/99cd1cf5-d260-49a6-803f-a0ec93f7973e/deploy-status)](https://app.netlify.com/sites/covid19-us/deploys)
+
+## Covid-19 Cases in the US 
+
+This project allows viewing cases of Covid-19 in the US, in a US state, or in a county within a state. This project uses the [NY Times Covid-19 Data Set](https://github.com/nytimes/covid-19-data).
 
 ## Available Scripts
 
