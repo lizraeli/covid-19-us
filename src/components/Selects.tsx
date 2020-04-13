@@ -1,33 +1,28 @@
 import "./App.css";
 
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useContext } from "react";
 import Select from "react-select";
 
 import { viewModeOptions, ViewModeOption } from "../constants";
+import { CaseDataContext } from "../providers/CaseData";
 
 import type { Option } from "../types";
 
-interface SelectsProps {
-  countyOptions: Option[];
-  stateOptions: Option[];
-  selectedState: Option | null;
-  selectedCounty: Option | null;
-  selectedViewMode: ViewModeOption;
-  handleStateSelect: (state: Option) => void;
-  handleCountySelect: (county: Option) => void;
-  handleViewModeSelect: (viewMode: ViewModeOption) => void;
-}
+const Selects: FunctionComponent = () => {
+  const {
+    selectedState,
+    selectedCounty,
+    selectedViewMode,
+    handleStateSelect,
+    handleCountySelect,
+    handleViewModeSelect,
+    processedCountyData,
+    processedStateData,
+  } = useContext(CaseDataContext);
 
-const Selects: FunctionComponent<SelectsProps> = ({
-  countyOptions,
-  stateOptions,
-  selectedState,
-  selectedCounty,
-  selectedViewMode,
-  handleStateSelect,
-  handleCountySelect,
-  handleViewModeSelect,
-}) => {
+  const { countyOptions } = processedCountyData;
+  const { stateOptions } = processedStateData;
+
   return (
     <>
       <div className="select-container">

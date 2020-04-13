@@ -18,6 +18,15 @@ const mockChart = jest.fn((props: any) => (
 jest.mock("react-apexcharts", () => jest.fn(mockChart));
 
 describe("App", () => {
+  const renderAppWithProvider = () => {
+    const App = require("../App").default;
+    const CaseDataProvider = require("../../providers/CaseData").CaseDataProvider;
+    return render(
+      <CaseDataProvider>
+        <App />
+      </CaseDataProvider>
+    );
+  };
   const mapAndCalcNewDataRows = (
     caseDataRows: CaseData[],
     property: "cases" | "deaths"
@@ -49,8 +58,7 @@ describe("App", () => {
       body: csvCountyData,
     });
 
-    const App = require("../App").default;
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = renderAppWithProvider();
 
     // State dropdown will be rendered once the CSV fails to fetch
     const errorElem = await waitForElement(() => getByTestId("error-message"));
@@ -66,8 +74,7 @@ describe("App", () => {
       body: csvCountyData,
     });
 
-    const App = require("../App").default;
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = renderAppWithProvider();
 
     // State dropdown will be rendered once the CSV fails to fetch
     const errorElem = await waitForElement(() => getByTestId("error-message"));
@@ -83,8 +90,7 @@ describe("App", () => {
       body: csvCountyData,
     });
 
-    const App = require("../App").default;
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = renderAppWithProvider();;
 
     // State dropdown will be rendered once the CSV is fetched and parsed
     const stateSelect = await waitForElement(() => getByTestId("state-select"));
@@ -163,8 +169,7 @@ describe("App", () => {
       body: csvCountyData,
     });
 
-    const App = require("../App").default;
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = renderAppWithProvider();
 
     // Mode dropdown will be rendered once the CSV is fetched and parsed
     const modeSelect = await waitForElement(() => getByTestId("mode-select"));
@@ -202,7 +207,7 @@ describe("App", () => {
       (caseData) => caseData.state === selectedState
     );
     const stateDataDateRows = dataForState.map((caseData) => caseData.date);
-    const stateDataNewCases = mapAndCalcNewDataRows(dataForState, 'cases');
+    const stateDataNewCases = mapAndCalcNewDataRows(dataForState, "cases");
 
     mockChartCall = mockChart.mock.calls[2][0];
     expect(mockChartCall.options.xaxis.categories).toEqual(stateDataDateRows);
@@ -226,7 +231,7 @@ describe("App", () => {
       (data) => data.state === selectedState && data.county === selectedCounty
     );
     const countyDataDates = dataForCounty.map((data) => data.date);
-    const countyDataCases = mapAndCalcNewDataRows(dataForCounty, 'cases');
+    const countyDataCases = mapAndCalcNewDataRows(dataForCounty, "cases");
 
     mockChartCall = mockChart.mock.calls[3][0];
     expect(mockChartCall.options.xaxis.categories).toEqual(countyDataDates);
@@ -245,8 +250,7 @@ describe("App", () => {
       body: csvCountyData,
     });
 
-    const App = require("../App").default;
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = renderAppWithProvider();
 
     // Mode dropdown will be rendered once the CSV is fetched and parsed
     const modeSelect = await waitForElement(() => getByTestId("mode-select"));
@@ -335,8 +339,7 @@ describe("App", () => {
       body: csvCountyData,
     });
 
-    const App = require("../App").default;
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = renderAppWithProvider();
 
     // Mode dropdown will be rendered once the CSV is fetched and parsed
     const modeSelect = await waitForElement(() => getByTestId("mode-select"));
@@ -376,7 +379,7 @@ describe("App", () => {
       (caseData) => caseData.state === selectedState
     );
     const stateDataDateRows = dataForState.map((caseData) => caseData.date);
-    const stateDataNewCases = mapAndCalcNewDataRows(dataForState, 'deaths');
+    const stateDataNewCases = mapAndCalcNewDataRows(dataForState, "deaths");
 
     mockChartCall = mockChart.mock.calls[2][0];
     expect(mockChartCall.options.xaxis.categories).toEqual(stateDataDateRows);
@@ -400,7 +403,7 @@ describe("App", () => {
       (data) => data.state === selectedState && data.county === selectedCounty
     );
     const countyDataDates = dataForCounty.map((data) => data.date);
-    const countyDataCases = mapAndCalcNewDataRows(dataForCounty, 'deaths');
+    const countyDataCases = mapAndCalcNewDataRows(dataForCounty, "deaths");
 
     mockChartCall = mockChart.mock.calls[3][0];
     expect(mockChartCall.options.xaxis.categories).toEqual(countyDataDates);

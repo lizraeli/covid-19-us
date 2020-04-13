@@ -1,27 +1,20 @@
 import "./App.css";
 
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useContext } from "react";
 import Chart from "react-apexcharts";
 
-import type { ProccessedCountyData, ProccessedStateData } from "../hooks";
-import { ViewMode, ViewModeOption } from "../constants";
-import type { Option } from "../types";
+import { ViewMode } from "../constants";
+import { CaseDataContext } from "../providers/CaseData";
 
-interface ChartContentProps {
-  processedCountyData: ProccessedCountyData;
-  processedStateData: ProccessedStateData;
-  selectedViewMode: ViewModeOption;
-  selectedState: Option | null;
-  selectedCounty: Option | null;
-}
+const ChartContent: FunctionComponent = () => {
+  const {
+    processedCountyData,
+    processedStateData,
+    selectedViewMode,
+    selectedState,
+    selectedCounty,
+  } = useContext(CaseDataContext);
 
-const ChartContent: FunctionComponent<ChartContentProps> = ({
-  processedCountyData,
-  processedStateData,
-  selectedViewMode,
-  selectedState,
-  selectedCounty,
-}) => {
   const getChartData = () => {
     const {
       totalCasesForCountyChartData,
