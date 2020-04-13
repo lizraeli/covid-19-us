@@ -82,7 +82,7 @@ export const useProcessedStateData = (
     totalCasesForStateChartData,
     newCasesForStateChartData,
     totalDeathsForStateChartData,
-    newDeathsForStateChartData
+    newDeathsForStateChartData,
   } = useMemo(() => {
     const selectedStateDataRows = selectedState
       ? stateDataDict[selectedState.value]
@@ -121,7 +121,7 @@ export const useProcessedStateData = (
       totalCasesForStateChartData,
       newCasesForStateChartData,
       totalDeathsForStateChartData,
-      newDeathsForStateChartData
+      newDeathsForStateChartData,
     };
   }, [selectedState, stateDataDict]);
 
@@ -134,6 +134,8 @@ export const useProcessedStateData = (
     totalCasesForStateChartData,
     newCasesForStateChartData,
     totalDeathsForStateChartData,
-    newDeathsForStateChartData
+    newDeathsForStateChartData,
   };
 };
+
+export type ProccessedStateData = ReturnType<typeof useProcessedStateData>;

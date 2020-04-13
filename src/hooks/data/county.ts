@@ -147,3 +147,5 @@ export const useProcessedCountyData = (
     newDeathsForCountyChartData,
   };
 };
+
+export type ProccessedCountyData = ReturnType<typeof useProcessedCountyData>;
