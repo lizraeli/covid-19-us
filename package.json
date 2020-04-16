@@ -64,6 +64,8 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/react-hooks": "^3.2.1",
+    "react-test-renderer": "^16.13.1",
     "xhr-mock": "^2.5.1"
   }
 }
