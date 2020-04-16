@@ -1,8 +1,84 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/99cd1cf5-d260-49a6-803f-a0ec93f7973e/deploy-status)](https://app.netlify.com/sites/covid19-us/deploys)
 
-## Covid-19 Cases in the US 
+## Covid-19 Data in the US 
 
-This project allows viewing cases of Covid-19 in the US, in a US state, or in a county within a state. This project uses the [NY Times Covid-19 Data Set](https://github.com/nytimes/covid-19-data).
+This project allows viewing cases of Covid-19 in the US, in a US state, or in a county within a state. This project uses the [NY Times Covid-19 Data Set](https://github.com/nytimes/covid-19-data). This project hosts the following CSV files:
+
+- U.S. State-Level Data 
+- U.S. County-Level Data
+
+
+## Libraries
+
+This project is written using [typescript](https://www.typescriptlang.org/) and [Create React App](https://github.com/facebook/create-react-app) along with the following libraries:
+
+- [Papaparse](https://www.papaparse.com/) - for parsing CSV files in the browser.
+- [Apex Charts](https://apexcharts.com/) and [React-ApexChart](https://apexcharts.com/docs/react-charts/) - for displaying data charts.
+- [React Select](https://react-select.com/) - for rendering nicely styled select components.
+- [react-loader-spinner](https://www.npmjs.com/package/react-loader-spinner) - for the SVG spinner component.
+- [Moment.js](https://momentjs.com/) - for parsing dates and filtering data by start date.
+- [Lodash](https://lodash.com/) - for mapping and rearranging the parsed CSV data.
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) and [React Hooks Testing Library](https://react-hooks-testing-library.com/) for testing.
+
+
+## The Data
+
+The shape of the NY-Times data as follows:
+
+- [U.S. State-Level Data](https://github.com/nytimes/covid-19-data/blob/master/us-states.csv):
+
+```ts
+  date: string;
+  state: string;
+  cases: number;
+  deaths: number;
+```
+
+- U.S. County-Level Data:
+
+```ts
+  date: string;
+  state: string;
+  county: string;
+  cases: number;
+  deaths: number;
+```
+
+### Narrowing by state and county
+
+Once the state-level data has been parsed, it is grouped by state:
+
+```ts
+{
+    state1: data[],
+    state2: data,
+    ...
+}
+```
+
+Once the county-level data has been parsed, it is grouped by county and by state in a tree-like structure:
+
+```ts
+{ 
+    state1: { 
+        county1: data[],
+        county2: data[]
+    },
+    state2: { 
+        county3: data[],
+        county4: data[]
+    },
+    ...
+}
+```
+
+- When no state is selected, the data for the entire US is displayed..
+
+- When a state is selected in the state-dropdown:
+   - The data for that state is displayed.
+   - The state is looked-up in the state-county dictionary. If it is found, all counties grouped under that state are displayed in the county dropdown.
+
+- When a county is selected in the county-dropdown, the data for that county is displayed.
 
 ## Available Scripts
 
@@ -21,6 +97,10 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+### `yarn test:coverage`
+
+Launches the test runner and generates test coverage in the terminal.
+
 ### `yarn build`
 
 Builds the app for production to the `build` folder.<br />
@@ -30,19 +110,3 @@ The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).

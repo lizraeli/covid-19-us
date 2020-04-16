@@ -50,6 +50,7 @@
 .chart-container {
   display: flex;
   padding-top: 1rem;
+  margin-bottom: 2rem;
 }
 
 @media (max-width: 1024px) {

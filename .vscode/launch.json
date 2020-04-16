@@ -18,6 +18,22 @@
             "disableOptimisticBPs": true,
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/react-scripts",
             "protocol": "inspector"
+        },
+        {
+            "type": "node",
+            "name": "test current file",
+            "request": "launch",
+            "args": [
+                "test",
+                "-i",
+                "${relativeFile}"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/react-scripts",
+            "protocol": "inspector"
         }
     ]
 }
