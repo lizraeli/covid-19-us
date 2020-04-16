@@ -22,16 +22,18 @@ export const useParseCSV = <T>(url: string) => {
       worker: true,
       header: true,
       dynamicTyping: true,
-      complete: (parseResult: DataParseResult<T> | null) => {
-        if (!parseResult || !!parseResult.errors.length) {
+      complete: (parseResult: DataParseResult<T>) => {
+        const { data, errors } = parseResult;
+        if (data.length === 0 && errors.length !== 0) {
+          const error = errors[0].message || "Error parsing data";
           setParseState({
             status: ParseStatus.ERROR,
-            error: "Error parsing data",
+            error,
           });
         } else {
           setParseState({
             status: ParseStatus.SUCCESS,
-            data: parseResult.data,
+            data,
           });
         }
       },
