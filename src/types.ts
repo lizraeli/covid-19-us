@@ -6,6 +6,8 @@ export interface CaseData {
   deaths: number;
 }
 
+export interface USData extends CaseData {}
+
 export interface CountyData extends CaseData {
   county: string;
   state: string;

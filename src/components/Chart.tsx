@@ -10,6 +10,7 @@ const ChartContent: FunctionComponent = () => {
   const {
     processedCountyData,
     processedStateData,
+    processedUSData,
     selectedViewMode,
     selectedState,
     selectedCounty,
@@ -24,15 +25,19 @@ const ChartContent: FunctionComponent = () => {
     } = processedCountyData;
 
     const {
-      totalUSCasesChartData,
-      newUSCasesChartData,
-      totalUSDeathsChartData,
-      newUSDeathsChartData,
+
       totalCasesForStateChartData,
       newCasesForStateChartData,
       totalDeathsForStateChartData,
       newDeathsForStateChartData,
     } = processedStateData;
+
+    const {
+      totalCasesForUSChartData,
+      newCasesForUSChartData,
+      totalDeathsForUSChartData,
+      newDeathsForUSChartData,
+    } = processedUSData;
 
     switch (selectedViewMode.value) {
       case ViewMode.TOTAL_CASES: {
@@ -44,7 +49,7 @@ const ChartContent: FunctionComponent = () => {
           return totalCasesForStateChartData;
         }
 
-        return totalUSCasesChartData;
+        return totalCasesForUSChartData;
       }
 
       case ViewMode.NEW_CASES: {
@@ -56,7 +61,7 @@ const ChartContent: FunctionComponent = () => {
           return newCasesForStateChartData;
         }
 
-        return newUSCasesChartData;
+        return newCasesForUSChartData;
       }
 
       case ViewMode.TOTAL_DEATHS: {
@@ -68,7 +73,7 @@ const ChartContent: FunctionComponent = () => {
           return totalDeathsForStateChartData;
         }
 
-        return totalUSDeathsChartData;
+        return totalDeathsForUSChartData;
       }
 
       case ViewMode.NEW_DEATHS: {
@@ -80,7 +85,7 @@ const ChartContent: FunctionComponent = () => {
           return newDeathsForStateChartData;
         }
 
-        return newUSDeathsChartData;
+        return newDeathsForUSChartData;
       }
     }
   };

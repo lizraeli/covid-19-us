@@ -3,7 +3,6 @@ import groupBy from "lodash/groupBy";
 
 import { ParseStatus, START_DATE } from "../../constants";
 import {
-  calcDataForUS,
   createOptionsFromDataDict,
   getDataAfterStartDate,
   processCaseDataRows,
@@ -34,47 +33,6 @@ export const useProcessedStateData = (
     const stateOptions = createOptionsFromDataDict(stateDataDict);
 
     return { stateDataDict, stateOptions };
-  }, [filteredDataRows]);
-
-  // Calculate data series for the US
-  const {
-    totalUSCasesChartData,
-    newUSCasesChartData,
-    totalUSDeathsChartData,
-    newUSDeathsChartData,
-  } = useMemo(() => {
-    const {
-      dateRowsUS,
-      totalCasesRowsUS,
-      newCasesRowsUS,
-      totalDeathsRowsUS,
-      newDeathRowsUS,
-    } = calcDataForUS(filteredDataRows || []);
-
-    const totalUSCasesChartData = makeChartData(
-      "US",
-      dateRowsUS,
-      totalCasesRowsUS
-    );
-    const newUSCasesChartData = makeChartData("US", dateRowsUS, newCasesRowsUS);
-
-    const totalUSDeathsChartData = makeChartData(
-      "US",
-      dateRowsUS,
-      totalDeathsRowsUS
-    );
-    const newUSDeathsChartData = makeChartData(
-      "US",
-      dateRowsUS,
-      newDeathRowsUS
-    );
-
-    return {
-      totalUSCasesChartData,
-      newUSCasesChartData,
-      totalUSDeathsChartData,
-      newUSDeathsChartData,
-    };
   }, [filteredDataRows]);
 
   // calculate data series for all states
@@ -127,10 +85,6 @@ export const useProcessedStateData = (
 
   return {
     stateOptions,
-    totalUSCasesChartData,
-    newUSCasesChartData,
-    totalUSDeathsChartData,
-    newUSDeathsChartData,
     totalCasesForStateChartData,
     newCasesForStateChartData,
     totalDeathsForStateChartData,
