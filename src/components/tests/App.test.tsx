@@ -10,7 +10,7 @@ import {
   US_COUNTIES_CSV_URL,
 } from "../../constants";
 import { usData, stateData, countyData } from "./fixtures/data";
-import { calcNewCasesRows, calcDataForUS } from "../../hooks/data/utils";
+import { calcNewCasesRows } from "../../hooks/data/utils";
 
 import type { CaseData } from "../../types";
 

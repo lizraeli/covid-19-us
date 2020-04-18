@@ -1,5 +1,4 @@
 import {
-  calcDataForUS,
   calcNewCasesRows,
   getDataAfterStartDate,
 } from "./utils";
@@ -179,64 +178,5 @@ describe("getDataAfterStartDate", () => {
     ];
 
     expect(getDataAfterStartDate(data, "2020-03-30")).toEqual([]);
-  });
-});
-
-describe("calcDataForUS", () => {
-  test("calcDataForUS", () => {
-    const stateCaseData = [
-      {
-        date: "2020-03-27",
-        state: "New Jersey",
-        cases: 0,
-        deaths: 0,
-      },
-      {
-        date: "2020-03-27",
-        state: "New York",
-        cases: 500,
-        deaths: 10,
-      },
-      {
-        date: "2020-03-28",
-        state: "New Jersey",
-        cases: 1000,
-        deaths: 10,
-      },
-      {
-        date: "2020-03-28",
-        state: "New York",
-        cases: 2000,
-        deaths: 20,
-      },
-      {
-        date: "2020-03-29",
-        state: "New Jersey",
-        fips: 34,
-        cases: 1500,
-        deaths: 15,
-      },
-      {
-        date: "2020-03-29",
-        state: "New York",
-        fips: 36,
-        cases: 3000,
-        deaths: 25,
-      },
-    ];
-
-    const {
-      dateRowsUS,
-      totalCasesRowsUS,
-      newCasesRowsUS,
-      totalDeathsRowsUS,
-      newDeathRowsUS,
-    } = calcDataForUS(stateCaseData);
-
-    expect(dateRowsUS).toEqual(["2020-03-27", "2020-03-28", "2020-03-29"]);
-    expect(totalCasesRowsUS).toEqual([500, 3000, 4500]);
-    expect(newCasesRowsUS).toEqual([500, 2500, 1500]);
-    expect(totalDeathsRowsUS).toEqual([10, 30, 40])
-    expect(newDeathRowsUS).toEqual([10, 20, 10])
   });
 });

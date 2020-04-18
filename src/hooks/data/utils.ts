@@ -58,29 +58,3 @@ export const calcNewCasesRows = (totalCasesRows: number[]) => {
 
   return newCasesRows;
 };
-
-export const calcDataForUS = (caseDataRowsByState: CaseData[]) => {
-  const dateDataDict = groupBy(caseDataRowsByState, (data) => data.date);
-
-  // calculate total and new cases data series
-  const totalCasesRowsUS = Object.values(dateDataDict).map((caseDataRows) =>
-    caseDataRows.reduce((cases, data) => cases + data.cases, 0)
-  );
-  const newCasesRowsUS = calcNewCasesRows(totalCasesRowsUS);
-
-  // calculate total and new deaths data series
-  const totalDeathsRowsUS = Object.values(dateDataDict).map((caseDataRows) =>
-    caseDataRows.reduce((cases, data) => cases + data.deaths, 0)
-  );
-  const newDeathRowsUS = calcNewCasesRows(totalDeathsRowsUS);
-
-  const dateRowsUS = Object.keys(dateDataDict);
-
-  return {
-    dateRowsUS,
-    totalCasesRowsUS,
-    newCasesRowsUS,
-    totalDeathsRowsUS,
-    newDeathRowsUS,
-  };
-};
