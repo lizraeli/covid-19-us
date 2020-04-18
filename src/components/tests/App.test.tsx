@@ -4,8 +4,12 @@ import xhrMock from "xhr-mock";
 import ParseCSV from "papaparse";
 
 import "./setup";
-import { US_STATES_CSV_URL, US_COUNTIES_CSV_URL } from "../../constants";
-import { stateData, countyData } from "./fixtures/data";
+import {
+  US_CSV_URL,
+  US_STATES_CSV_URL,
+  US_COUNTIES_CSV_URL,
+} from "../../constants";
+import { usData, stateData, countyData } from "./fixtures/data";
 import { calcNewCasesRows, calcDataForUS } from "../../hooks/data/utils";
 
 import type { CaseData } from "../../types";
@@ -20,13 +24,15 @@ jest.mock("react-apexcharts", () => jest.fn(mockChart));
 describe("App", () => {
   const renderAppWithProvider = () => {
     const App = require("../App").default;
-    const CaseDataProvider = require("../../providers/CaseData").CaseDataProvider;
+    const CaseDataProvider = require("../../providers/CaseData")
+      .CaseDataProvider;
     return render(
       <CaseDataProvider>
         <App />
       </CaseDataProvider>
     );
   };
+
   const mapAndCalcNewDataRows = (
     caseDataRows: CaseData[],
     property: "cases" | "deaths"
@@ -35,8 +41,22 @@ describe("App", () => {
     return calcNewCasesRows(totalCasesRows);
   };
 
+
+  const csvUSData = ParseCSV.unparse(usData)
   const csvStateData = ParseCSV.unparse(stateData);
   const csvCountyData = ParseCSV.unparse(countyData);
+  
+  const mockCSVUrls = () => {
+    xhrMock.get(US_CSV_URL, {
+      body: csvUSData,
+    });
+    xhrMock.get(US_STATES_CSV_URL, {
+      body: csvStateData,
+    });
+    xhrMock.get(US_COUNTIES_CSV_URL, {
+      body: csvCountyData,
+    });
+  };
 
   beforeEach(() => {
     xhrMock.setup();
@@ -49,10 +69,13 @@ describe("App", () => {
 
   test("Error fetching", async () => {
     const errorMessage = "Could not fetch.";
-    xhrMock.get(US_STATES_CSV_URL, {
+    xhrMock.get(US_CSV_URL, {
       status: 400,
       reason: errorMessage,
       body: '{"error": "error"}',
+    });
+    xhrMock.get(US_STATES_CSV_URL, {
+      body: csvStateData,
     });
     xhrMock.get(US_COUNTIES_CSV_URL, {
       body: csvCountyData,
@@ -67,8 +90,11 @@ describe("App", () => {
   });
 
   test("Invalid csv", async () => {
+    xhrMock.get(US_CSV_URL, {
+      body: "hello/123",
+    });
     xhrMock.get(US_STATES_CSV_URL, {
-      body: "asdsa/sadsadsDasdas/",
+      body: csvStateData,
     });
     xhrMock.get(US_COUNTIES_CSV_URL, {
       body: csvCountyData,
@@ -83,14 +109,9 @@ describe("App", () => {
   });
 
   test("View total cases for state and county", async () => {
-    xhrMock.get(US_STATES_CSV_URL, {
-      body: csvStateData,
-    });
-    xhrMock.get(US_COUNTIES_CSV_URL, {
-      body: csvCountyData,
-    });
+    mockCSVUrls();
 
-    const { getByTestId } = renderAppWithProvider();;
+    const { getByTestId } = renderAppWithProvider();
 
     // State dropdown will be rendered once the CSV is fetched and parsed
     const stateSelect = await waitForElement(() => getByTestId("state-select"));
@@ -99,14 +120,15 @@ describe("App", () => {
     expect(getByTestId("heading").textContent).toEqual("Total Cases in the US");
 
     // assertions about data provided to chart
-    const { totalCasesRowsUS, dateRowsUS } = calcDataForUS(stateData);
+    const USDataDates = usData.map((data) => data.date);
+    const USDataCases = usData.map((data) => data.cases);
 
     let mockChartCall;
     mockChartCall = mockChart.mock.calls[0][0];
-    expect(mockChartCall.options.xaxis.categories).toEqual(dateRowsUS);
+    expect(mockChartCall.options.xaxis.categories).toEqual(USDataDates);
     expect(mockChartCall.series[0]).toEqual({
       name: "US",
-      data: totalCasesRowsUS,
+      data: USDataCases,
     });
 
     // Selecting a state
@@ -161,13 +183,7 @@ describe("App", () => {
   });
 
   test("View new cases for US, state and county", async () => {
-    xhrMock.get(US_STATES_CSV_URL, {
-      body: csvStateData,
-    });
-
-    xhrMock.get(US_COUNTIES_CSV_URL, {
-      body: csvCountyData,
-    });
+    mockCSVUrls();
 
     const { getByTestId } = renderAppWithProvider();
 
@@ -182,15 +198,16 @@ describe("App", () => {
     expect(getByTestId("heading").textContent).toEqual("New Cases in the US");
 
     // assertions about data provided to chart
-    const { newCasesRowsUS, dateRowsUS } = calcDataForUS(stateData);
+    const USDataDates = usData.map((data) => data.date);
+    const USDataNewCasesRows = mapAndCalcNewDataRows(usData, "cases");
 
     let mockChartCall;
     // Will show total cases by default. This is tested elsewhere.
     mockChartCall = mockChart.mock.calls[1][0];
-    expect(mockChartCall.options.xaxis.categories).toEqual(dateRowsUS);
+    expect(mockChartCall.options.xaxis.categories).toEqual(USDataDates);
     expect(mockChartCall.series[0]).toEqual({
       name: "US",
-      data: newCasesRowsUS,
+      data: USDataNewCasesRows,
     });
 
     // selecting a state from the state dropdown
@@ -242,13 +259,7 @@ describe("App", () => {
   });
 
   test("View total deaths for US, state and county", async () => {
-    xhrMock.get(US_STATES_CSV_URL, {
-      body: csvStateData,
-    });
-
-    xhrMock.get(US_COUNTIES_CSV_URL, {
-      body: csvCountyData,
-    });
+    mockCSVUrls();
 
     const { getByTestId } = renderAppWithProvider();
 
@@ -266,16 +277,17 @@ describe("App", () => {
     );
 
     // assertions about data provided to chart
-    const { totalDeathsRowsUS, dateRowsUS } = calcDataForUS(stateData);
+    const USDataDates = usData.map((data) => data.date);
+    const USDataTotalDeathsRows = usData.map(caseData => caseData.deaths)
 
     let mockChartCall;
     // Will show total cases by default. This is tested elsewhere.
     // assertions about data provided to chart
     mockChartCall = mockChart.mock.calls[1][0];
-    expect(mockChartCall.options.xaxis.categories).toEqual(dateRowsUS);
+    expect(mockChartCall.options.xaxis.categories).toEqual(USDataDates);
     expect(mockChartCall.series[0]).toEqual({
       name: "US",
-      data: totalDeathsRowsUS,
+      data: USDataTotalDeathsRows,
     });
 
     // selecting a state from the state dropdown
@@ -331,13 +343,7 @@ describe("App", () => {
   });
 
   test("View new deaths for US, state and county", async () => {
-    xhrMock.get(US_STATES_CSV_URL, {
-      body: csvStateData,
-    });
-
-    xhrMock.get(US_COUNTIES_CSV_URL, {
-      body: csvCountyData,
-    });
+    mockCSVUrls();
 
     const { getByTestId } = renderAppWithProvider();
 
@@ -352,15 +358,16 @@ describe("App", () => {
     expect(getByTestId("heading").textContent).toEqual("New Deaths in the US");
 
     // assertions about data provided to chart
-    const { newDeathRowsUS, dateRowsUS } = calcDataForUS(stateData);
+    const USDataDates = usData.map((data) => data.date);
+    const USDataNewDeathsRows = mapAndCalcNewDataRows(usData, "deaths");
 
     let mockChartCall;
     // Will show total cases by default. This is tested elsewhere.
     mockChartCall = mockChart.mock.calls[1][0];
-    expect(mockChartCall.options.xaxis.categories).toEqual(dateRowsUS);
+    expect(mockChartCall.options.xaxis.categories).toEqual(USDataDates);
     expect(mockChartCall.series[0]).toEqual({
       name: "US",
-      data: newDeathRowsUS,
+      data: USDataNewDeathsRows,
     });
 
     // selecting a state from the state dropdown
