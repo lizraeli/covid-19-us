@@ -18,13 +18,25 @@ import {
   useProcessedCountyData,
   useProcessedStateData,
 } from "../hooks";
+import {
+  dataIsCountyData,
+  dataIsStateData,
+  dataIsUSData,
+} from "../hooks/data/utils";
 
 import type {
   ProccessedUSData,
   ProccessedStateData,
   ProccessedCountyData,
 } from "../hooks";
-import type { CountyData, Option, StateData, ParseState, USData } from "../types";
+
+import type {
+  CountyData,
+  Option,
+  StateData,
+  ParseState,
+  USData,
+} from "../types";
 
 interface CaseDataContext {
   selectedState: Option | null;
@@ -35,7 +47,7 @@ interface CaseDataContext {
   handleViewModeSelect: (viewMode: ViewModeOption) => void;
   countyDataParseState: ParseState<CountyData>;
   stateDataParseState: ParseState<StateData>;
-  USDataParseState:  ParseState<USData>;
+  USDataParseState: ParseState<USData>;
   processedCountyData: ProccessedCountyData;
   processedStateData: ProccessedStateData;
   processedUSData: ProccessedUSData;
@@ -66,17 +78,17 @@ export const CaseDataProvider: FunctionComponent = ({ children }) => {
   const {
     parseState: countyDataParseState,
     fetchAndParseData: fetchAndParseCountyData,
-  } = useParseCSV<CountyData>(US_COUNTIES_CSV_URL);
+  } = useParseCSV<CountyData>(US_COUNTIES_CSV_URL, dataIsCountyData);
 
   const {
     parseState: stateDataParseState,
     fetchAndParseData: fetchAndParseStateData,
-  } = useParseCSV<StateData>(US_STATES_CSV_URL);
+  } = useParseCSV<StateData>(US_STATES_CSV_URL, dataIsStateData);
 
   const {
     parseState: USDataParseState,
     fetchAndParseData: fetchAndParseUSData,
-  } = useParseCSV<USData>(US_CSV_URL);
+  } = useParseCSV<USData>(US_CSV_URL, dataIsUSData);
 
   useEffect(() => {
     fetchAndParseCountyData();
@@ -96,9 +108,7 @@ export const CaseDataProvider: FunctionComponent = ({ children }) => {
     selectedState
   );
 
-  const processedUSData = useProcessedUSData(
-    USDataParseState
-  )
+  const processedUSData = useProcessedUSData(USDataParseState);
 
   return (
     <CaseDataContext.Provider
@@ -114,7 +124,7 @@ export const CaseDataProvider: FunctionComponent = ({ children }) => {
         USDataParseState,
         processedCountyData,
         processedStateData,
-        processedUSData
+        processedUSData,
       }}
     >
       {children}

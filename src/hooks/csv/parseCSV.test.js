@@ -10,16 +10,16 @@ describe("test useParseSCV", () => {
 
   beforeEach(() => {
     mockParse.mockClear();
-  })
+  });
 
   test("initial parseState parseState ", async () => {
-    const { result } = renderHook(() => useParseCSV(url));
+    const { result } = renderHook(() => useParseCSV(url, () => true));
     expect(result.current.parseState).toEqual({
-      status: ParseStatus.UNDEFINED
+      status: ParseStatus.UNDEFINED,
     });
   });
 
-  test("parseState on parse complete ", async () => {
+  test("parseState on parse complete with data", async () => {
     const parseResult = {
       errors: [],
       data: ["some-data"],
@@ -30,14 +30,16 @@ describe("test useParseSCV", () => {
       }, 0);
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => useParseCSV(url));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useParseCSV(url, () => true)
+    );
 
     act(() => {
       result.current.fetchAndParseData();
     });
 
     expect(result.current.parseState).toEqual({
-      status: ParseStatus.PARSING
+      status: ParseStatus.PARSING,
     });
 
     await waitForNextUpdate();
@@ -47,6 +49,37 @@ describe("test useParseSCV", () => {
     });
   });
 
+  test("filters out data that does not confrom to the type guard", async () => {
+    const parseResult = {
+      errors: [],
+      data: ["some-data", 2, 3],
+    };
+    const typeGurd = (val) => typeof val === "number";
+
+    mockParse.mockImplementation((_, options) => {
+      setTimeout(() => {
+        options.complete(parseResult);
+      }, 0);
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useParseCSV(url, typeGurd)
+    );
+
+    act(() => {
+      result.current.fetchAndParseData();
+    });
+
+    expect(result.current.parseState).toEqual({
+      status: ParseStatus.PARSING,
+    });
+
+    await waitForNextUpdate();
+    expect(result.current.parseState).toEqual({
+      status: ParseStatus.SUCCESS,
+      data: [2, 3],
+    });
+  });
 
   test("parseState on parse complete with errors and data", async () => {
     const parseResult = {
@@ -60,14 +93,16 @@ describe("test useParseSCV", () => {
       }, 0);
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => useParseCSV(url));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useParseCSV(url, () => true)
+    );
 
     act(() => {
       result.current.fetchAndParseData();
     });
 
     expect(result.current.parseState).toEqual({
-      status: ParseStatus.PARSING
+      status: ParseStatus.PARSING,
     });
 
     await waitForNextUpdate();
@@ -89,14 +124,16 @@ describe("test useParseSCV", () => {
       }, 0);
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => useParseCSV(url));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useParseCSV(url, () => true)
+    );
 
     act(() => {
       result.current.fetchAndParseData();
     });
 
     expect(result.current.parseState).toEqual({
-      status: ParseStatus.PARSING
+      status: ParseStatus.PARSING,
     });
 
     await waitForNextUpdate();
@@ -108,7 +145,7 @@ describe("test useParseSCV", () => {
 
   test("parseState on error", async () => {
     const parseError = {
-      message: "something went wrong"
+      message: "something went wrong",
     };
 
     mockParse.mockImplementation((_, options) => {
@@ -117,14 +154,16 @@ describe("test useParseSCV", () => {
       }, 0);
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => useParseCSV(url));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useParseCSV(url, () => true)
+    );
 
     act(() => {
       result.current.fetchAndParseData();
     });
 
     expect(result.current.parseState).toEqual({
-      status: ParseStatus.PARSING
+      status: ParseStatus.PARSING,
     });
 
     await waitForNextUpdate();
