@@ -9,18 +9,20 @@ import ChartContent from "./Chart";
 import Selects from "./Selects";
 
 function App() {
-  const { countyDataParseState, stateDataParseState } = useContext(
+  const { countyDataParseState, stateDataParseState, USDataParseState } = useContext(
     CaseDataContext
   );
 
   const error = getErrorFromParseStates(
     countyDataParseState,
-    stateDataParseState
+    stateDataParseState,
+    USDataParseState
   );
 
   const isLoading = isAnyParseStateActive(
     countyDataParseState,
-    stateDataParseState
+    stateDataParseState,
+    USDataParseState
   );
 
   return (

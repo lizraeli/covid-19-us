@@ -10,16 +10,21 @@ import {
   US_COUNTIES_CSV_URL,
   viewModeOptions,
   ViewModeOption,
+  US_CSV_URL,
 } from "../constants";
 import {
   useParseCSV,
+  useProcessedUSData,
   useProcessedCountyData,
   useProcessedStateData,
-  ProccessedCountyData,
-  ProccessedStateData,
 } from "../hooks";
 
-import type { CountyData, Option, StateData, ParseState } from "../types";
+import type {
+  ProccessedUSData,
+  ProccessedStateData,
+  ProccessedCountyData,
+} from "../hooks";
+import type { CountyData, Option, StateData, ParseState, USData } from "../types";
 
 interface CaseDataContext {
   selectedState: Option | null;
@@ -30,8 +35,10 @@ interface CaseDataContext {
   handleViewModeSelect: (viewMode: ViewModeOption) => void;
   countyDataParseState: ParseState<CountyData>;
   stateDataParseState: ParseState<StateData>;
+  USDataParseState:  ParseState<USData>;
   processedCountyData: ProccessedCountyData;
   processedStateData: ProccessedStateData;
+  processedUSData: ProccessedUSData;
 }
 
 export const CaseDataContext = createContext<CaseDataContext>(
@@ -66,9 +73,15 @@ export const CaseDataProvider: FunctionComponent = ({ children }) => {
     fetchAndParseData: fetchAndParseStateData,
   } = useParseCSV<StateData>(US_STATES_CSV_URL);
 
+  const {
+    parseState: USDataParseState,
+    fetchAndParseData: fetchAndParseUSData,
+  } = useParseCSV<USData>(US_CSV_URL);
+
   useEffect(() => {
     fetchAndParseCountyData();
     fetchAndParseStateData();
+    fetchAndParseUSData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -83,6 +96,10 @@ export const CaseDataProvider: FunctionComponent = ({ children }) => {
     selectedState
   );
 
+  const processedUSData = useProcessedUSData(
+    USDataParseState
+  )
+
   return (
     <CaseDataContext.Provider
       value={{
@@ -94,8 +111,10 @@ export const CaseDataProvider: FunctionComponent = ({ children }) => {
         handleViewModeSelect,
         countyDataParseState,
         stateDataParseState,
+        USDataParseState,
         processedCountyData,
         processedStateData,
+        processedUSData
       }}
     >
       {children}

@@ -1,24 +1,31 @@
 import moment from "moment";
-import groupBy from "lodash/groupBy";
 
 import type { CaseData, DataDict } from "../../types";
+import { chain, last } from "lodash";
 
 export const mapToProp = <T, K extends keyof T>(array: T[], key: K) =>
   array.map((element) => element[key]);
 
 export const getDataAfterStartDate = <T extends CaseData>(
-  dataRows: T[] | null,
+  dataRows: T[],
   startDate: string
 ) => {
   const momentStartDate = moment(startDate);
-  return dataRows?.filter((data) => moment(data.date).isAfter(momentStartDate));
+  return dataRows.filter((data) => moment(data.date).isAfter(momentStartDate));
 };
 
 export const createOptionsFromDataDict = <T extends CaseData>(
-  dataDict: DataDict<T> | null
+  dataDict: DataDict<T>
 ) => {
-  const keys = dataDict ? Object.keys(dataDict) : [];
-  const options = keys.map((key: string) => ({ value: key, label: key }));
+  // sorting by latest number of cases descending
+  const keys = chain(dataDict)
+    .toPairs()
+    .sortBy(([_, cases]) => last(cases)?.cases)
+    .map(([key, _]) => key)
+    .reverse()
+    .value();
+
+  const options = keys.map((key) => ({ value: key, label: key }));
 
   return options;
 };
@@ -35,7 +42,7 @@ export const processCaseDataRows = (caseDataRows: CaseData[]) => {
     totalCasesRows,
     newCasesRows,
     totalDeathsRows,
-    newDeathsRows
+    newDeathsRows,
   };
 };
 
@@ -49,30 +56,4 @@ export const calcNewCasesRows = (totalCasesRows: number[]) => {
   });
 
   return newCasesRows;
-};
-
-export const calcDataForUS = (caseDataRowsByState: CaseData[]) => {
-  const dateDataDict = groupBy(caseDataRowsByState, (data) => data.date);
-
-  // calculate total and new cases data series
-  const totalCasesRowsUS = Object.values(dateDataDict).map((caseDataRows) =>
-    caseDataRows.reduce((cases, data) => cases + data.cases, 0)
-  );
-  const newCasesRowsUS = calcNewCasesRows(totalCasesRowsUS);
-
-  // calculate total and new deaths data series
-  const totalDeathsRowsUS = Object.values(dateDataDict).map((caseDataRows) =>
-    caseDataRows.reduce((cases, data) => cases + data.deaths, 0)
-  );
-  const newDeathRowsUS = calcNewCasesRows(totalDeathsRowsUS);
-
-  const dateRowsUS = Object.keys(dateDataDict);
-
-  return {
-    dateRowsUS,
-    totalCasesRowsUS,
-    newCasesRowsUS,
-    totalDeathsRowsUS,
-    newDeathRowsUS,
-  };
 };

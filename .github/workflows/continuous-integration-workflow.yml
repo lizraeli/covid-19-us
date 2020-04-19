@@ -1,0 +1,38 @@
+name: Continuous Integration Workflow
+on:
+    # Trigger the workflow on push or pull request,
+    # but only for the master branch
+    push:
+      branches:
+        - master
+        - dev
+    pull_request:
+      branches:
+        - master
+        - dev
+
+jobs: 
+    build:
+        name: build
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+              node-version: [12.x]
+
+        steps:
+
+        - uses: actions/checkout@v2
+
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v1
+          with:
+            node-version: ${{ matrix.node-version }}
+
+        - run: yarn
+        - run: yarn test:coverage
+      
+        - name: Coveralls
+          uses: coverallsapp/github-action@master
+          with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}                

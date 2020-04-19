@@ -1,3 +1,9 @@
+export const usData = [
+  { date: "2020-03-28", cases: 123619, deaths: 2134 },
+  { date: "2020-03-29", cases: 142194, deaths: 2486 },
+  { date: "2020-03-30", cases: 163683, deaths: 3073 },
+];
+
 export const stateData = [
   {
     date: "2020-03-28",

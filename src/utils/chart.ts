@@ -60,7 +60,7 @@ interface ApexChartData {
 }
 
 export const makeChartData = (
-  name: string = "US",
+  name: string = "",
   categories: string[],
   data: number[]
 ): ApexChartData => {
