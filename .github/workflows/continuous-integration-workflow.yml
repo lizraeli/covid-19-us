@@ -10,7 +10,10 @@ on:
       branches:
         - master
         - dev
-    
+
+jobs: 
+    name: Test Coverage
+    runs-on: ubuntu-latest
     steps:
         - name: Coveralls GitHub Action
           uses: coverallsapp/github-action@v1.0.1
