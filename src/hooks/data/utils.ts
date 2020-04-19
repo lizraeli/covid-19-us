@@ -1,7 +1,13 @@
 import moment from "moment";
 
-import type { CaseData, DataDict } from "../../types";
-import { chain, last } from "lodash";
+import type {
+  CaseData,
+  DataDict,
+  USData,
+  StateData,
+  CountyData,
+} from "../../types";
+import { chain, last, isNumber, isString } from "lodash";
 
 export const mapToProp = <T, K extends keyof T>(array: T[], key: K) =>
   array.map((element) => element[key]);
@@ -12,6 +18,26 @@ export const getDataAfterStartDate = <T extends CaseData>(
 ) => {
   const momentStartDate = moment(startDate);
   return dataRows.filter((data) => moment(data.date).isAfter(momentStartDate));
+};
+
+const dataIsCaseData = (data: any) => {
+  return (
+    isString(data?.date) && isNumber(data?.cases) && isNumber(data?.deaths)
+  );
+};
+
+export const dataIsUSData = (data: any): data is USData => {
+  return dataIsCaseData(data);
+};
+
+export const dataIsStateData = (data: any): data is StateData => {
+  return dataIsCaseData(data) && isString(data?.state);
+};
+
+export const dataIsCountyData = (data: any): data is CountyData => {
+  return (
+    dataIsCaseData(data) && isString(data?.state) && isString(data?.county)
+  );
 };
 
 export const createOptionsFromDataDict = <T extends CaseData>(

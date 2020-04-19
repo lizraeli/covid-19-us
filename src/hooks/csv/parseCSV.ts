@@ -1,13 +1,12 @@
 import { useState, useCallback } from "react";
 import ParseCSV from "papaparse";
-import type { ParseResult } from "papaparse";
 
 import { ParseStatus } from "../../constants";
 import type { ParseState } from "../../types";
 
-type DataParseResult<T> = ParseResult & { data: T[] };
+type TypeGuard<T> = (value: any) => value is T;
 
-export const useParseCSV = <T>(url: string) => {
+export const useParseCSV = <T>(url: string, typeGuard: TypeGuard<T>) => {
   const [parseState, setParseState] = useState<ParseState<T>>({
     status: ParseStatus.UNDEFINED,
   });
@@ -22,7 +21,7 @@ export const useParseCSV = <T>(url: string) => {
       worker: true,
       header: true,
       dynamicTyping: true,
-      complete: (parseResult: DataParseResult<T>) => {
+      complete: (parseResult) => {
         const { data, errors } = parseResult;
         if (data.length === 0 && errors.length !== 0) {
           const error = errors[0].message || "Error parsing data";
@@ -31,9 +30,10 @@ export const useParseCSV = <T>(url: string) => {
             error,
           });
         } else {
+          const filteredData = data.filter(typeGuard);
           setParseState({
             status: ParseStatus.SUCCESS,
-            data,
+            data: filteredData,
           });
         }
       },
@@ -44,7 +44,7 @@ export const useParseCSV = <T>(url: string) => {
         });
       },
     });
-  }, [url]);
+  }, [url, typeGuard]);
 
   return { parseState, fetchAndParseData };
 };

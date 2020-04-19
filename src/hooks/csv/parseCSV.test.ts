@@ -7,37 +7,40 @@ const url = "some-url";
 
 describe("test useParseSCV", () => {
   const mockParse = jest.spyOn(ParseCSV, "parse");
+  const predicate = (val: any): val is any => true;
 
   beforeEach(() => {
     mockParse.mockClear();
-  })
+  });
 
   test("initial parseState parseState ", async () => {
-    const { result } = renderHook(() => useParseCSV(url));
+    const { result } = renderHook(() => useParseCSV(url, predicate));
     expect(result.current.parseState).toEqual({
-      status: ParseStatus.UNDEFINED
+      status: ParseStatus.UNDEFINED,
     });
   });
 
-  test("parseState on parse complete ", async () => {
+  test("parseState on parse complete with data", async () => {
     const parseResult = {
       errors: [],
       data: ["some-data"],
     };
-    mockParse.mockImplementation((_, options) => {
+    (mockParse as jest.SpyInstance<any, any>).mockImplementation((_, options) => {
       setTimeout(() => {
         options.complete(parseResult);
       }, 0);
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => useParseCSV(url));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useParseCSV(url, predicate)
+    );
 
     act(() => {
       result.current.fetchAndParseData();
     });
 
     expect(result.current.parseState).toEqual({
-      status: ParseStatus.PARSING
+      status: ParseStatus.PARSING,
     });
 
     await waitForNextUpdate();
@@ -47,6 +50,37 @@ describe("test useParseSCV", () => {
     });
   });
 
+  test("filters out data that does not confrom to the type guard", async () => {
+    const parseResult = {
+      errors: [],
+      data: ["some-data", 2, 3],
+    };
+    const typeGuard = (val: any): val is Number => typeof val === "number";
+
+    (mockParse as jest.MockInstance<any, any>).mockImplementation((_, options) => {
+      setTimeout(() => {
+        options.complete(parseResult);
+      }, 0);
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useParseCSV(url, typeGuard)
+    );
+
+    act(() => {
+      result.current.fetchAndParseData();
+    });
+
+    expect(result.current.parseState).toEqual({
+      status: ParseStatus.PARSING,
+    });
+
+    await waitForNextUpdate();
+    expect(result.current.parseState).toEqual({
+      status: ParseStatus.SUCCESS,
+      data: [2, 3],
+    });
+  });
 
   test("parseState on parse complete with errors and data", async () => {
     const parseResult = {
@@ -54,20 +88,22 @@ describe("test useParseSCV", () => {
       data: ["some data"],
     };
 
-    mockParse.mockImplementation((_, options) => {
+    (mockParse as jest.MockInstance<any, any>).mockImplementation((_, options) => {
       setTimeout(() => {
         options.complete(parseResult);
       }, 0);
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => useParseCSV(url));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useParseCSV(url, predicate)
+    );
 
     act(() => {
       result.current.fetchAndParseData();
     });
 
     expect(result.current.parseState).toEqual({
-      status: ParseStatus.PARSING
+      status: ParseStatus.PARSING,
     });
 
     await waitForNextUpdate();
@@ -83,20 +119,22 @@ describe("test useParseSCV", () => {
       data: [],
     };
 
-    mockParse.mockImplementation((_, options) => {
+    (mockParse as jest.MockInstance<any, any>).mockImplementation((_, options) => {
       setTimeout(() => {
         options.complete(parseResult);
       }, 0);
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => useParseCSV(url));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useParseCSV(url, predicate)
+    );
 
     act(() => {
       result.current.fetchAndParseData();
     });
 
     expect(result.current.parseState).toEqual({
-      status: ParseStatus.PARSING
+      status: ParseStatus.PARSING,
     });
 
     await waitForNextUpdate();
@@ -108,23 +146,25 @@ describe("test useParseSCV", () => {
 
   test("parseState on error", async () => {
     const parseError = {
-      message: "something went wrong"
+      message: "something went wrong",
     };
 
-    mockParse.mockImplementation((_, options) => {
+    (mockParse as jest.MockInstance<any, any>).mockImplementation((_, options) => {
       setTimeout(() => {
         options.error(parseError);
       }, 0);
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => useParseCSV(url));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useParseCSV(url, predicate)
+    );
 
     act(() => {
       result.current.fetchAndParseData();
     });
 
     expect(result.current.parseState).toEqual({
-      status: ParseStatus.PARSING
+      status: ParseStatus.PARSING,
     });
 
     await waitForNextUpdate();
