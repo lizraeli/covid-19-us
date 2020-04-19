@@ -54,7 +54,7 @@ describe("test useParseSCV", () => {
       errors: [],
       data: ["some-data", 2, 3],
     };
-    const typeGurd = (val) => typeof val === "number";
+    const typeGuard = (val) => typeof val === "number";
 
     mockParse.mockImplementation((_, options) => {
       setTimeout(() => {
@@ -63,7 +63,7 @@ describe("test useParseSCV", () => {
     });
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useParseCSV(url, typeGurd)
+      useParseCSV(url, typeGuard)
     );
 
     act(() => {
