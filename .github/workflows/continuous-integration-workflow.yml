@@ -1,0 +1,16 @@
+name: Continuous Integration Workflow
+on:
+    # Trigger the workflow on push or pull request,
+    # but only for the master branch
+    push:
+      branches:
+        - master
+        - dev
+    pull_request:
+      branches:
+        - master
+        - dev
+    
+    steps:
+        - name: Coveralls GitHub Action
+          uses: coverallsapp/github-action@v1.0.1
