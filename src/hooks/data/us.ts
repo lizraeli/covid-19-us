@@ -17,7 +17,7 @@ export const useProcessedUSData = (
   const dataRows =
     USDataParseState.status === ParseStatus.SUCCESS
       ? USDataParseState.data
-      : null;
+      : [];
 
   const filteredDataRows = useMemo(
     () => getDataAfterStartDate(dataRows, START_DATE),
@@ -37,7 +37,7 @@ export const useProcessedUSData = (
       newCasesRows,
       totalDeathsRows,
       newDeathsRows,
-    } = processCaseDataRows(filteredDataRows || []);
+    } = processCaseDataRows(filteredDataRows);
 
     const totalCasesForUSChartData = makeChartData(
       US_LABEL,

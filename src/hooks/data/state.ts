@@ -18,7 +18,7 @@ export const useProcessedStateData = (
   const dataRows =
     stateDataParseState.status === ParseStatus.SUCCESS
       ? stateDataParseState.data
-      : null;
+      : [];
 
   const filteredDataRows = useMemo(
     () => getDataAfterStartDate(dataRows, START_DATE),
@@ -27,9 +27,7 @@ export const useProcessedStateData = (
 
   // create state options
   const { stateDataDict, stateOptions } = useMemo(() => {
-    const stateDataDict = filteredDataRows
-      ? groupBy(filteredDataRows, (stateData) => stateData.state)
-      : {};
+    const stateDataDict = groupBy(filteredDataRows, (stateData) => stateData.state)
     const stateOptions = createOptionsFromDataDict(stateDataDict);
 
     return { stateDataDict, stateOptions };
