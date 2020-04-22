@@ -9,9 +9,11 @@ import ChartContent from "./Chart";
 import Selects from "./Selects";
 
 function App() {
-  const { countyDataParseState, stateDataParseState, USDataParseState } = useContext(
-    CaseDataContext
-  );
+  const {
+    countyDataParseState,
+    stateDataParseState,
+    USDataParseState,
+  } = useContext(CaseDataContext);
 
   const error = getErrorFromParseStates(
     countyDataParseState,
@@ -41,6 +43,19 @@ function App() {
         <>
           <Selects />
           <ChartContent />
+          <div className="notes">
+            This tracker uses data from The New York Times, based on reports
+            from state and local health agencies. The data files can be accessed
+            on github at{" "}
+            <a href="https://github.com/nytimes/covid-19-data">
+              nytimes/covid-19-data
+            </a>
+            . The code that powers this tracker is available on github at{" "}
+            <a href="https://github.com/lizraeli/covid-19-us">
+              lizraeli/covid-19-us
+            </a>
+            .
+          </div>
         </>
       )}
     </div>
