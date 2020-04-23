@@ -4,11 +4,11 @@
 
 ## Covid-19 Data in the US 
 
-This project allows viewing cases of Covid-19 in the US, in a US state, or in a county within a state. This project uses the [NY Times Covid-19 Data Set](https://github.com/nytimes/covid-19-data). This project hosts the following CSV files:
+This project allows viewing cases of Covid-19 in the US, in a US state, or in a county within a state. This project uses the [NY Times Covid-19 Data](https://github.com/nytimes/covid-19-data). The data is hosted in the following CSV files:
 
-- U.S. State-Level Data 
-- U.S. County-Level Data
-
+- [U.S. Data](https://github.com/nytimes/covid-19-data/blob/master/us.csv)
+- [U.S. State-Level Data](https://github.com/nytimes/covid-19-data/blob/master/us-states.csv)
+- [U.S. County-Level Data](https://github.com/nytimes/covid-19-data/blob/master/us-counties.csv)
 
 ## Libraries
 
