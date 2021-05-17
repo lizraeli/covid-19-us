@@ -17,7 +17,11 @@ export const getDataAfterStartDate = <T extends CaseData>(
   startDate: string
 ) => {
   const momentStartDate = moment(startDate);
-  return dataRows.filter((data) => moment(data.date).isAfter(momentStartDate));
+
+  const startIndex = dataRows.findIndex((data) =>
+    moment(data.date).isAfter(momentStartDate)
+  );
+  return dataRows.slice(startIndex);
 };
 
 const dataIsCaseData = (data: any) => {
@@ -75,6 +79,9 @@ export const processCaseDataRows = (caseDataRows: CaseData[]) => {
 export const calcNewCasesRows = (totalCasesRows: number[]) => {
   const newCasesRows = totalCasesRows.map((cases, index) => {
     const isFirstElement = index === 0;
+    if (isFirstElement) {
+      return 0;
+    }
     const prevCases = isFirstElement ? 0 : totalCasesRows[index - 1];
     const newCases = cases - prevCases;
 

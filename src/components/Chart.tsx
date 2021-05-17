@@ -16,6 +16,13 @@ const ChartContent: FunctionComponent = () => {
     selectedCounty,
   } = useContext(CaseDataContext);
 
+  const {
+    totalCasesForStateChartData,
+    newCasesForStateChartData,
+    totalDeathsForStateChartData,
+    newDeathsForStateChartData,
+  } = processedStateData;
+
   const getChartData = () => {
     const {
       totalCasesForCountyChartData,
@@ -23,14 +30,6 @@ const ChartContent: FunctionComponent = () => {
       totalDeathsForCountyChartData,
       newDeathsForCountyChartData,
     } = processedCountyData;
-
-    const {
-
-      totalCasesForStateChartData,
-      newCasesForStateChartData,
-      totalDeathsForStateChartData,
-      newDeathsForStateChartData,
-    } = processedStateData;
 
     const {
       totalCasesForUSChartData,

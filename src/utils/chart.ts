@@ -5,6 +5,10 @@ export const getNumberWithCommas = (num: number) => {
 };
 
 export const formatDate = (value: string) => {
+  if (!value || !value.replace) {
+    return "";
+  }
+
   return value.replace("2020-", "").replace("-", "/");
 };
 
@@ -80,3 +84,7 @@ export const makeChartData = (
     ],
   };
 };
+
+export const defaultChartData = makeChartData("loading...", [], []);
+export const makeDefaultChartData = (name: string) =>
+  makeChartData(name, [], []);
