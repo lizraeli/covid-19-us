@@ -53,6 +53,7 @@ interface CaseDataContext {
   processedUSData: ProccessedUSData;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CaseDataContext = createContext<CaseDataContext>(
   {} as CaseDataContext
 );
