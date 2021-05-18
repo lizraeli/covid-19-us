@@ -1,30 +1,28 @@
 import { useMemo } from "react";
 
 import { ParseStatus, START_DATE } from "../../constants";
-import {
-  getDataAfterStartDate,
-  processCaseDataRows,
-} from "./utils";
+import { getDataAfterStartDate, processCaseDataRows } from "./utils";
 import { makeChartData } from "../../utils/chart";
 
 import type { ParseState, USData } from "../../types";
 
 const US_LABEL = "US";
 
-export const useProcessedUSData = (
-  USDataParseState: ParseState<USData>
-) => {
-  const dataRows =
-    USDataParseState.status === ParseStatus.SUCCESS
-      ? USDataParseState.data
-      : [];
+export const useProcessedUSData = (USDataParseState: ParseState<USData>) => {
+  const dataRows = useMemo(
+    () =>
+      USDataParseState.status === ParseStatus.SUCCESS
+        ? USDataParseState.data
+        : [],
+    [USDataParseState]
+  );
 
   const filteredDataRows = useMemo(
     () => getDataAfterStartDate(dataRows, START_DATE),
     [dataRows]
   );
 
-  // calculate data series 
+  // calculate data series
   const {
     totalCasesForUSChartData,
     newCasesForUSChartData,

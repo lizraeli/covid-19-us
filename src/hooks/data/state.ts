@@ -15,10 +15,13 @@ export const useProcessedStateData = (
   stateDataParseState: ParseState<StateData>,
   selectedState: Option | null
 ) => {
-  const dataRows =
-    stateDataParseState.status === ParseStatus.SUCCESS
-      ? stateDataParseState.data
-      : [];
+  const dataRows = useMemo(
+    () =>
+      stateDataParseState.status === ParseStatus.SUCCESS
+        ? stateDataParseState.data
+        : [],
+    [stateDataParseState]
+  );
 
   const filteredDataRows = useMemo(
     () => getDataAfterStartDate(dataRows, START_DATE),

@@ -72,10 +72,13 @@ export const useProcessedCountyData = (
   selectedState: Option | null,
   selectedCounty: Option | null
 ) => {
-  const dataRows =
-    countyParseState.status === ParseStatus.SUCCESS
-      ? countyParseState.data
-      : [];
+  const dataRows = useMemo(
+    () =>
+      countyParseState.status === ParseStatus.SUCCESS
+        ? countyParseState.data
+        : [],
+    [countyParseState]
+  );
 
   const stateDictWithCountyData = useMemo(() => {
     const filteredDataRows = getDataAfterStartDate(dataRows, START_DATE);
