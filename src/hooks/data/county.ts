@@ -104,7 +104,6 @@ export const useProcessedCountyData = (
         ? countyDataInStateDict[selectedCounty.value] ?? []
         : [];
 
-      console.log("about to process county data");
       const {
         dateRows,
         totalCasesRows,
@@ -112,7 +111,7 @@ export const useProcessedCountyData = (
         totalDeathsRows,
         newDeathsRows,
       } = await worker.processCaseDataRows(selectedCountyDataRows);
-      console.log("done processing county data");
+
       const totalCasesForCountyChartData = makeChartData(
         selectedCounty?.value,
         dateRows,

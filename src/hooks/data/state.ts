@@ -43,7 +43,6 @@ export const useProcessedStateData = (
         ? stateDataDict[selectedState.value]
         : [];
 
-      console.log("about to process state data");
       const {
         dateRows,
         totalCasesRows,
@@ -52,7 +51,6 @@ export const useProcessedStateData = (
         newDeathsRows,
       } = await worker.processCaseDataRows(selectedStateDataRows);
 
-      console.log("got state data: ");
       const totalCasesForStateChartData = makeChartData(
         selectedState?.value,
         dateRows,
