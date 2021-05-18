@@ -9,7 +9,7 @@ export function useAsyncMemo<T>(
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    let cancel = false;
+    let canceled = false;
     const promise = factory();
 
     if (promise === undefined || promise === null) {
@@ -19,14 +19,14 @@ export function useAsyncMemo<T>(
     setIsLoading(true);
 
     promise.then((data) => {
-      setIsLoading(false);
-      if (!cancel) {
+      if (!canceled) {
+        setIsLoading(false);
         setData(data);
       }
     });
 
     return () => {
-      cancel = true;
+      canceled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
