@@ -21,6 +21,11 @@ export const getDataAfterStartDate = <T extends CaseData>(
   const startIndex = dataRows.findIndex((data) =>
     moment(data.date).isAfter(momentStartDate)
   );
+
+  if (startIndex === -1) {
+    return [];
+  }
+
   return dataRows.slice(startIndex);
 };
 
@@ -79,9 +84,6 @@ export const processCaseDataRows = (caseDataRows: CaseData[]) => {
 export const calcNewCasesRows = (totalCasesRows: number[]) => {
   const newCasesRows = totalCasesRows.map((cases, index) => {
     const isFirstElement = index === 0;
-    if (isFirstElement) {
-      return 0;
-    }
     const prevCases = isFirstElement ? 0 : totalCasesRows[index - 1];
     const newCases = cases - prevCases;
 
