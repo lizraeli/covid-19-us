@@ -44,8 +44,8 @@ export const useProcessedUSData = (USDataParseState: ParseState<USData>) => {
     );
     const newCasesForUSChartData = makeChartData(
       US_LABEL,
-      dateRows,
-      newCasesRows
+      dateRows.slice(1),
+      newCasesRows.slice(1)
     );
     const totalDeathsForUSChartData = makeChartData(
       US_LABEL,
@@ -54,8 +54,8 @@ export const useProcessedUSData = (USDataParseState: ParseState<USData>) => {
     );
     const newDeathsForUSChartData = makeChartData(
       US_LABEL,
-      dateRows,
-      newDeathsRows
+      dateRows.slice(1),
+      newDeathsRows.slice(1)
     );
 
     return {

@@ -61,8 +61,8 @@ export const useProcessedStateData = (
       );
       const newCasesForStateChartData = makeChartData(
         selectedState?.value,
-        dateRows,
-        newCasesRows
+        dateRows.slice(1),
+        newCasesRows.slice(1)
       );
       const totalDeathsForStateChartData = makeChartData(
         selectedState?.value,
@@ -71,8 +71,8 @@ export const useProcessedStateData = (
       );
       const newDeathsForStateChartData = makeChartData(
         selectedState?.value,
-        dateRows,
-        newDeathsRows
+        dateRows.slice(1),
+        newDeathsRows.slice(1)
       );
 
       return {

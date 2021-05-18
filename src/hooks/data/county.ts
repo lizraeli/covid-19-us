@@ -123,8 +123,8 @@ export const useProcessedCountyData = (
       );
       const newCasesForCountyChartData = makeChartData(
         selectedCounty?.value,
-        dateRows,
-        newCasesRows
+        dateRows.slice(1),
+        newCasesRows.slice(1)
       );
       const totalDeathsForCountyChartData = makeChartData(
         selectedCounty?.value,
@@ -133,8 +133,8 @@ export const useProcessedCountyData = (
       );
       const newDeathsForCountyChartData = makeChartData(
         selectedCounty?.value,
-        dateRows,
-        newDeathsRows
+        dateRows.slice(1),
+        newDeathsRows.slice(1)
       );
 
       return {
