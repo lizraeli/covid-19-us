@@ -50,7 +50,8 @@
       "!src/components/tests/**/*.{js,jsx,ts,tsx}"
     ],
     "moduleNameMapper": {
-      "comlink-loader!./calcData": "<rootDir>/src/hooks/data/worker/calcDataClass.ts"
+      "comlink-loader!./calcData": "<rootDir>/src/hooks/data/worker/calcDataClass.ts",
+      "comlink-loader!./csv": "<rootDir>/src/hooks/csv/worker/csvClass.ts"
     }
   },
   "browserslist": {
