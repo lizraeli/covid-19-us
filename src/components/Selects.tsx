@@ -35,6 +35,7 @@ const Selects: FunctionComponent = () => {
             onChange={(selected) => handleStateSelect(selected as Option)}
             placeholder="Select State"
             id="state-select"
+            data-testid="state-select"
           />
         </div>
         <div>
@@ -46,6 +47,7 @@ const Selects: FunctionComponent = () => {
             onChange={(selected) => handleCountySelect(selected as Option)}
             placeholder="Select County"
             id="county-select"
+            data-testid="county-select"
           />
         </div>
         <label htmlFor="mode-select">View Mode</label>
@@ -57,6 +59,7 @@ const Selects: FunctionComponent = () => {
           }
           placeholder="Select View Mode"
           id="mode-select"
+          data-testid="mode-select"
         />
       </div>
     </>
