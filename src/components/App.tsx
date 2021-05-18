@@ -3,11 +3,7 @@ import "./App.css";
 import React, { useContext } from "react";
 import Loader from "react-loader-spinner";
 
-import {
-  isAnyParseStateActive,
-  getErrorFromParseStates,
-  isParseStateActive,
-} from "./utils";
+import { isAnyParseStateActive, getErrorFromParseStates } from "./utils";
 import { CaseDataContext } from "../providers/CaseData";
 import ChartContent from "./Chart";
 import Selects from "./Selects";
@@ -28,20 +24,6 @@ function App() {
     USDataParseState
   );
 
-  const getLoadingMessage = () => {
-    if (isParseStateActive(USDataParseState)) {
-      return "Loading US data";
-    }
-    if (isParseStateActive(stateDataParseState)) {
-      return "Loading state data";
-    }
-    if (isParseStateActive(countyDataParseState)) {
-      return "Loading county data";
-    }
-
-    return "Loading data...";
-  };
-
   return (
     <div className="main-container">
       <h2 className="heading">Covid-19 Case Tracker</h2>
@@ -51,7 +33,7 @@ function App() {
         </div>
       ) : isLoading ? (
         <div className="loader-container">
-          <div> {getLoadingMessage()}</div>
+          <div>Loading...</div>
           <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />
         </div>
       ) : (

@@ -30,3 +30,15 @@ declare module "comlink-loader!./calcData" {
 
   export = CalcDataWorker;
 }
+
+declare module "comlink-loader!./csv" {
+  import { ParseResult } from "papaparse";
+
+  class CSVWorker extends Worker {
+    constructor();
+
+    parse(url: string): Promise<ParseResult>;
+  }
+
+  export = CSVWorker;
+}
