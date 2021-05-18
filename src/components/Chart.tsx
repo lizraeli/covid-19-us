@@ -2,7 +2,6 @@ import "./App.css";
 
 import React, { FunctionComponent, useContext } from "react";
 import Chart from "react-apexcharts";
-import Loader from "react-loader-spinner";
 
 import { ViewMode } from "../constants";
 import { CaseDataContext } from "../providers/CaseData";
