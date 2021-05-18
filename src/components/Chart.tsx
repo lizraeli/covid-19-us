@@ -120,7 +120,6 @@ const ChartContent: FunctionComponent = () => {
     return (
       <div className="chart-loader-container">
         <div>Loading Chart Data...</div>
-        <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />
       </div>
     );
   };
