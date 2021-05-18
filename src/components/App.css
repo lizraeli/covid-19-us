@@ -15,6 +15,14 @@
   min-height: 50vh;
 }
 
+.chart-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  min-height: 50vh;
+}
+
 .error-container {
   display: flex;
   flex-direction: column;
@@ -63,7 +71,7 @@
 }
 
 @media (max-width: 1024px) {
-  .chart-container {
+  .chart-container, .chart-loader-container {
     border: 1px solid #4c3c1b;
     overflow-x: auto;
     flex-wrap: nowrap;
@@ -74,7 +82,7 @@
 }
 
 @media (min-width: 1025px) {
-  .chart-container {
+  .chart-container, .chart-loader-container {
     align-items: center;
     justify-content: center;
     border: none;

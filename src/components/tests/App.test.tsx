@@ -116,7 +116,7 @@ describe.skip("App", () => {
   test("View total cases for state and county", async () => {
     mockCSVUrls();
     const promise = Promise.resolve();
-    const { findByTestId, container, getByTestId } =
+    const { findByTestId, getByTestId } =
       await renderAppWithProvider();
     await act(() => promise);
 

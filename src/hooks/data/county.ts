@@ -93,6 +93,7 @@ export const useProcessedCountyData = (
       totalDeathsForCountyChartData,
       newDeathsForCountyChartData,
     },
+    isLoading,
   ] = useAsyncMemo(
     async () => {
       const countyOptions = createCountyOptions(
@@ -155,6 +156,7 @@ export const useProcessedCountyData = (
   );
 
   return {
+    isLoading,
     countyOptions,
     totalCasesForCountyChartData,
     newCasesForCountyChartData,

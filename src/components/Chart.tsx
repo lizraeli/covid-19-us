@@ -2,6 +2,7 @@ import "./App.css";
 
 import React, { FunctionComponent, useContext } from "react";
 import Chart from "react-apexcharts";
+import Loader from "react-loader-spinner";
 
 import { ViewMode } from "../constants";
 import { CaseDataContext } from "../providers/CaseData";
@@ -99,7 +100,33 @@ const ChartContent: FunctionComponent = () => {
       : `${selectedViewMode.label} in ${selectedState.label}`;
   };
 
-  const chartData = getChartData();
+  const renderChart = () => {
+    const chartData = getChartData();
+    return (
+      <div className="chart-container">
+        <Chart
+          data-testid="chart"
+          options={chartData.options}
+          series={chartData.series}
+          type="bar"
+          height={380}
+          width={1200}
+        />
+      </div>
+    );
+  };
+
+  const renderLoading = () => {
+    return (
+      <div className="chart-loader-container">
+        <div>Loading Chart Data...</div>
+        <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />
+      </div>
+    );
+  };
+
+  const isLoading =
+    processedStateData.isLoading || processedCountyData.isLoading;
 
   return (
     <>
@@ -108,17 +135,9 @@ const ChartContent: FunctionComponent = () => {
           {getHeading()}
         </h2>
       </div>
+
       <div className="flex-column-container">
-        <div className="chart-container">
-          <Chart
-            data-testid="chart"
-            options={chartData.options}
-            series={chartData.series}
-            type="bar"
-            height={380}
-            width={1200}
-          />
-        </div>
+        {isLoading ? renderLoading() : renderChart()}
       </div>
     </>
   );
