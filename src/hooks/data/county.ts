@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import groupBy from "lodash/groupBy";
 
 import { ParseStatus, START_DATE } from "../../constants";
-import { createOptionsFromDataDict, getDataAfterStartDate } from "./utils";
+import { createOptionsFromDataDict } from "./utils";
 import { defaultChartData, makeChartData } from "../../utils/chart";
 import CalcDataWorker from "./worker";
 
@@ -80,10 +80,18 @@ export const useProcessedCountyData = (
     [countyParseState]
   );
 
-  const stateDictWithCountyData = useMemo(() => {
-    const filteredDataRows = getDataAfterStartDate(dataRows, START_DATE);
-    return filteredDataRows ? getCountyDataByState(filteredDataRows) : {};
-  }, [dataRows]);
+  const [stateDictWithCountyData] = useAsyncMemo(
+    async () => {
+      const filteredDataRows = await worker.getDataAfterStartDate(
+        dataRows,
+        START_DATE
+      );
+
+      return filteredDataRows ? getCountyDataByState(filteredDataRows) : {};
+    },
+    [dataRows],
+    getCountyDataByState([])
+  );
 
   const [
     {

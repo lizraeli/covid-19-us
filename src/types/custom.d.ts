@@ -10,6 +10,10 @@ declare module "comlink-loader!./calcData" {
   class CalcDataWorker extends Worker {
     constructor();
 
+    getDataAfterStartDate: <T extends CaseData>(
+      dataRows: T[],
+      startDate: string
+    ) => T[];
     calcNewCasesRows: (totalCasesRows: number[]) => Promise<number[]>;
     createOptionsFromDataDict: <T extends CaseData>(
       dataDict: DataDict<T>

@@ -1,9 +1,4 @@
-import React, {
-  FunctionComponent,
-  createContext,
-  useState,
-  useEffect,
-} from "react";
+import React, { FunctionComponent, createContext, useState } from "react";
 
 import {
   US_STATES_CSV_URL,
@@ -42,6 +37,9 @@ interface CaseDataContext {
   selectedState: Option | null;
   selectedCounty: Option | null;
   selectedViewMode: ViewModeOption;
+  fetchAndParseCountyData: () => Promise<void>;
+  fetchAndParseStateData: () => Promise<void>;
+  fetchAndParseUSData: () => Promise<void>;
   handleStateSelect: (state: Option) => void;
   handleCountySelect: (county: Option) => void;
   handleViewModeSelect: (viewMode: ViewModeOption) => void;
@@ -91,13 +89,6 @@ export const CaseDataProvider: FunctionComponent = ({ children }) => {
     fetchAndParseData: fetchAndParseUSData,
   } = useParseCSV<USData>(US_CSV_URL, dataIsUSData);
 
-  useEffect(() => {
-    fetchAndParseCountyData();
-    fetchAndParseStateData();
-    fetchAndParseUSData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const processedCountyData = useProcessedCountyData(
     countyDataParseState,
     selectedState,
@@ -114,6 +105,9 @@ export const CaseDataProvider: FunctionComponent = ({ children }) => {
   return (
     <CaseDataContext.Provider
       value={{
+        fetchAndParseCountyData,
+        fetchAndParseStateData,
+        fetchAndParseUSData,
         selectedState,
         selectedCounty,
         selectedViewMode,

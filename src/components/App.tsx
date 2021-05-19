@@ -1,16 +1,41 @@
 import "./App.css";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Loader from "react-loader-spinner";
 
-import { isAnyParseStateActive, getErrorFromParseStates } from "./utils";
+import { getErrorFromParseStates, isParseStateActive } from "./utils";
 import { CaseDataContext } from "../providers/CaseData";
 import ChartContent from "./Chart";
 import Selects from "./Selects";
+import { ParseStatus } from "../constants";
 
 function App() {
-  const { countyDataParseState, stateDataParseState, USDataParseState } =
-    useContext(CaseDataContext);
+  const {
+    fetchAndParseUSData,
+    fetchAndParseStateData,
+    fetchAndParseCountyData,
+    countyDataParseState,
+    stateDataParseState,
+    USDataParseState,
+  } = useContext(CaseDataContext);
+
+  useEffect(() => {
+    if (USDataParseState.status === ParseStatus.UNDEFINED) {
+      fetchAndParseUSData();
+    } else if (
+      USDataParseState.status === ParseStatus.SUCCESS &&
+      stateDataParseState.status === ParseStatus.UNDEFINED
+    ) {
+      fetchAndParseStateData();
+    } else if (
+      stateDataParseState.status === ParseStatus.SUCCESS &&
+      countyDataParseState.status === ParseStatus.UNDEFINED
+    ) {
+      fetchAndParseCountyData();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [USDataParseState, stateDataParseState, countyDataParseState]);
 
   const error = getErrorFromParseStates(
     countyDataParseState,
@@ -18,11 +43,17 @@ function App() {
     USDataParseState
   );
 
-  const isLoading = isAnyParseStateActive(
-    countyDataParseState,
-    stateDataParseState,
-    USDataParseState
-  );
+  useEffect(() => {
+    console.log("USDataParseState status: ", USDataParseState.status);
+  }, [USDataParseState]);
+
+  useEffect(() => {
+    console.log("stateDataParseState status: ", stateDataParseState.status);
+  }, [stateDataParseState]);
+
+  useEffect(() => {
+    console.log("countyDataParseState status: ", countyDataParseState.status);
+  }, [countyDataParseState]);
 
   return (
     <div className="main-container">
@@ -31,9 +62,9 @@ function App() {
         <div className="error-container">
           <div data-testid="error-message"> {error} </div>
         </div>
-      ) : isLoading ? (
+      ) : isParseStateActive(USDataParseState) ? (
         <div className="loader-container">
-          <div>Loading...</div>
+          <div>Loading US Data...</div>
           <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />
         </div>
       ) : (

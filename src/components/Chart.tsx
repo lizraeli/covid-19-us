@@ -2,6 +2,7 @@ import "./App.css";
 
 import React, { FunctionComponent, useContext } from "react";
 import Chart from "react-apexcharts";
+import Loader from "react-loader-spinner";
 
 import { ViewMode } from "../constants";
 import { CaseDataContext } from "../providers/CaseData";
@@ -119,6 +120,7 @@ const ChartContent: FunctionComponent = () => {
     return (
       <div className="chart-loader-container">
         <div>Loading Chart Data...</div>
+        <Loader type="TailSpin" color="#00BFFF" height={25} width={25} />
       </div>
     );
   };
