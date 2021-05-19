@@ -38,7 +38,7 @@ export const viewModeOptions: ViewModeOption[] = [
   },
 ];
 
-export const START_DATE = moment().subtract(30, "days").format("YYYY-MM-DD");
+export const START_DATE = moment().subtract(90, "days").format("YYYY-MM-DD");
 
 export const US_CSV_URL =
   "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us.csv";
