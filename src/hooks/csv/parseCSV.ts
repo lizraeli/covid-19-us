@@ -18,9 +18,7 @@ export const useParseCSV = <T>(url: string, typeGuard: TypeGuard<T>) => {
     });
 
     try {
-      console.log("start parsing: ", url)
       const parseResult = await worker.parse(url);
-      console.log("complete parsing: ", url)
 
       const { data, errors } = parseResult;
       if (data.length === 0 && errors.length !== 0) {

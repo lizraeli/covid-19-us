@@ -27,18 +27,18 @@ const Selects: FunctionComponent = () => {
   const { stateOptions } = processedStateData;
   const { countyOptions } = processedCountyData;
 
-  const isLoadingStateData =
-    isParseStateActive(stateDataParseState);
-  const isLoadingCountyData =
-    isParseStateActive(countyDataParseState);
+  const isLoadingStates = isParseStateActive(stateDataParseState);
+  const isLoadingCounties =
+    isParseStateActive(countyDataParseState) ||
+    processedCountyData.isProcessingCounties;
 
   return (
     <>
       <div className="select-container">
         <>
-          {isLoadingStateData ? (
+          {isLoadingStates ? (
             <div>
-              Loading state data...
+              Loading states...
               <Loader type="TailSpin" color="#00BFFF" height={25} width={25} />
             </div>
           ) : (
@@ -57,9 +57,9 @@ const Selects: FunctionComponent = () => {
           )}
         </>
         <>
-          {isLoadingCountyData ? (
+          {isLoadingCounties ? (
             <div>
-              Loading county data...
+              Loading counties...
               <Loader type="TailSpin" color="#00BFFF" height={25} width={25} />
             </div>
           ) : (

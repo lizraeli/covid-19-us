@@ -43,18 +43,6 @@ function App() {
     USDataParseState
   );
 
-  useEffect(() => {
-    console.log("USDataParseState status: ", USDataParseState.status);
-  }, [USDataParseState]);
-
-  useEffect(() => {
-    console.log("stateDataParseState status: ", stateDataParseState.status);
-  }, [stateDataParseState]);
-
-  useEffect(() => {
-    console.log("countyDataParseState status: ", countyDataParseState.status);
-  }, [countyDataParseState]);
-
   return (
     <div className="main-container">
       <h2 className="heading">Covid-19 Case Tracker</h2>

@@ -125,8 +125,11 @@ const ChartContent: FunctionComponent = () => {
     );
   };
 
-  const isLoading =
-    processedStateData.isLoading || processedCountyData.isLoading;
+  const isLoading = selectedCounty
+    ? processedCountyData.isProcessingData
+    : selectedState
+    ? processedStateData.isLoading
+    : false;
 
   return (
     <>

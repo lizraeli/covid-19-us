@@ -47,13 +47,14 @@ export const createCountyOptions = (
  * }
  * @param countyDataRows
  */
-export const getCountyDataByState = (
+export const makeCountyDataByStateDict = (
   countyDataRows: CountyData[]
 ): CountyDataByStateDict => {
   const dataGroupedByState = groupBy(
     countyDataRows,
     (countyData) => countyData.state
   );
+
   const stateDictWithCountyData = Object.entries(dataGroupedByState).reduce(
     (dict, [state, countyDataRows]) => {
       return {
@@ -80,35 +81,37 @@ export const useProcessedCountyData = (
     [countyParseState]
   );
 
-  const [stateDictWithCountyData] = useAsyncMemo(
+  const [stateDictWithCountyData, isProcessingCounties] = useAsyncMemo(
     async () => {
       const filteredDataRows = await worker.getDataAfterStartDate(
         dataRows,
         START_DATE
       );
+      const stateDictWithCountyData = filteredDataRows
+        ? makeCountyDataByStateDict(filteredDataRows)
+        : {};
 
-      return filteredDataRows ? getCountyDataByState(filteredDataRows) : {};
+      return stateDictWithCountyData;
     },
     [dataRows],
-    getCountyDataByState([])
+    makeCountyDataByStateDict([])
+  );
+
+  const countyOptions = useMemo(
+    () => createCountyOptions(stateDictWithCountyData, selectedState),
+    [stateDictWithCountyData, selectedState]
   );
 
   const [
     {
-      countyOptions,
       totalCasesForCountyChartData,
       newCasesForCountyChartData,
       totalDeathsForCountyChartData,
       newDeathsForCountyChartData,
     },
-    isLoading,
+    isProcessingData,
   ] = useAsyncMemo(
     async () => {
-      const countyOptions = createCountyOptions(
-        stateDictWithCountyData,
-        selectedState
-      );
-
       const countyDataInStateDict = selectedState
         ? stateDictWithCountyData[selectedState.value]
         : {};
@@ -146,7 +149,6 @@ export const useProcessedCountyData = (
       );
 
       return {
-        countyOptions,
         totalCasesForCountyChartData,
         newCasesForCountyChartData,
         totalDeathsForCountyChartData,
@@ -155,7 +157,6 @@ export const useProcessedCountyData = (
     },
     [stateDictWithCountyData, selectedState, selectedCounty],
     {
-      countyOptions: [],
       totalCasesForCountyChartData: defaultChartData,
       newCasesForCountyChartData: defaultChartData,
       totalDeathsForCountyChartData: defaultChartData,
@@ -164,7 +165,8 @@ export const useProcessedCountyData = (
   );
 
   return {
-    isLoading,
+    isProcessingCounties,
+    isProcessingData,
     countyOptions,
     totalCasesForCountyChartData,
     newCasesForCountyChartData,
