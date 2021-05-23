@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { ParseStatus, START_DATE } from "../../constants";
-import { getDataAfterStartDate, processCaseDataRows } from "./utils";
+import { getDataAfterStartDate, processCaseDataRows } from "./worker/calcData";
 import { makeChartData } from "../../utils/chart";
 
 import type { ParseState, USData } from "../../types";

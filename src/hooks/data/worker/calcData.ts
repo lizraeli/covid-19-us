@@ -1,10 +1,7 @@
 import moment from "moment";
-import { chain, last } from "lodash";
 
-import type { CaseData, DataDict } from "../../../types";
-
-export const mapToProp = <T, K extends keyof T>(array: T[], key: K) =>
-  array.map((element) => element[key]);
+import type { CaseData } from "../../../types";
+import { mapToProp } from "../utils";
 
 export const getDataAfterStartDate = <T extends CaseData>(
   dataRows: T[],
@@ -12,22 +9,6 @@ export const getDataAfterStartDate = <T extends CaseData>(
 ) => {
   const momentStartDate = moment(startDate);
   return dataRows.filter((data) => moment(data.date).isAfter(momentStartDate));
-};
-
-export const createOptionsFromDataDict = <T extends CaseData>(
-  dataDict: DataDict<T>
-) => {
-  // sorting by latest number of cases descending
-  const keys = chain(dataDict)
-    .toPairs()
-    .sortBy(([_, cases]) => last(cases)?.cases)
-    .map(([key, _]) => key)
-    .reverse()
-    .value();
-
-  const options = keys.map((key) => ({ value: key, label: key }));
-
-  return options;
 };
 
 export const processCaseDataRows = (caseDataRows: CaseData[]) => {

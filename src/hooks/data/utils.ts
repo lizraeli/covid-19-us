@@ -1,5 +1,3 @@
-import moment from "moment";
-
 import type {
   CaseData,
   DataDict,
@@ -11,23 +9,6 @@ import { chain, last, isNumber, isString } from "lodash";
 
 export const mapToProp = <T, K extends keyof T>(array: T[], key: K) =>
   array.map((element) => element[key]);
-
-export const getDataAfterStartDate = <T extends CaseData>(
-  dataRows: T[],
-  startDate: string
-) => {
-  const momentStartDate = moment(startDate);
-
-  const startIndex = dataRows.findIndex((data) =>
-    moment(data.date).isAfter(momentStartDate)
-  );
-
-  if (startIndex === -1) {
-    return [];
-  }
-
-  return dataRows.slice(startIndex);
-};
 
 const dataIsCaseData = (data: any) => {
   return (
@@ -63,32 +44,4 @@ export const createOptionsFromDataDict = <T extends CaseData>(
   const options = keys.map((key) => ({ value: key, label: key }));
 
   return options;
-};
-
-export const processCaseDataRows = (caseDataRows: CaseData[]) => {
-  const dateRows = mapToProp(caseDataRows, "date");
-  const totalCasesRows = mapToProp(caseDataRows, "cases");
-  const newCasesRows = calcNewCasesRows(totalCasesRows);
-  const totalDeathsRows = mapToProp(caseDataRows, "deaths");
-  const newDeathsRows = calcNewCasesRows(totalDeathsRows);
-
-  return {
-    dateRows,
-    totalCasesRows,
-    newCasesRows,
-    totalDeathsRows,
-    newDeathsRows,
-  };
-};
-
-export const calcNewCasesRows = (totalCasesRows: number[]) => {
-  const newCasesRows = totalCasesRows.map((cases, index) => {
-    const isFirstElement = index === 0;
-    const prevCases = isFirstElement ? 0 : totalCasesRows[index - 1];
-    const newCases = cases - prevCases;
-
-    return newCases;
-  });
-
-  return newCasesRows;
 };

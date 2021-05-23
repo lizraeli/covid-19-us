@@ -4,9 +4,6 @@ declare module "comlink-loader!./calcData" {
     cases: number;
     deaths: number;
   }
-
-  type DataDict<T extends CaseData> = Record<string, T[]>;
-
   class CalcDataWorker extends Worker {
     constructor();
 
@@ -15,14 +12,6 @@ declare module "comlink-loader!./calcData" {
       startDate: string
     ) => T[];
     calcNewCasesRows: (totalCasesRows: number[]) => Promise<number[]>;
-    createOptionsFromDataDict: <T extends CaseData>(
-      dataDict: DataDict<T>
-    ) => Promise<
-      {
-        value: string;
-        label: string;
-      }[]
-    >;
     processCaseDataRows: (caseDataRows: CaseData[]) => Promise<{
       dateRows: string[];
       totalCasesRows: number[];

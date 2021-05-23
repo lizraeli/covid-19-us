@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import groupBy from "lodash/groupBy";
 
 import { ParseStatus, START_DATE } from "../../constants";
-import { createOptionsFromDataDict, getDataAfterStartDate } from "./utils";
+import { createOptionsFromDataDict } from "./utils";
+import { getDataAfterStartDate } from "./worker/calcData";
 import { makeChartData, defaultChartData } from "../../utils/chart";
 import { useAsyncMemo } from "../useAsyncMemo";
 import CalcDataWorker from "./worker";

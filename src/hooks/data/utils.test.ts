@@ -1,7 +1,7 @@
 import {
   calcNewCasesRows,
   getDataAfterStartDate,
-} from "./utils";
+} from "./worker/calcData";
 import { CaseData } from "../../types";
 
 describe("calcNewCasesRows", () => {
