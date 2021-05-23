@@ -56,7 +56,9 @@ export const calcNewCasesRows = (totalCasesRows: number[]) => {
     const prevCases = totalCasesRows[index - 1];
     const newCases = cases - prevCases;
 
-    return newCases;
+    // return 0 if total number was adjusted down,
+    // where otherwise the number of new cases would be negative
+    return newCases < 0 ? 0 : newCases;
   });
 
   return newCasesRows;
