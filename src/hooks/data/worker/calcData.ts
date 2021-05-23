@@ -1,5 +1,3 @@
-import moment from "moment";
-
 import type { CaseData } from "../../../types";
 import { mapToProp } from "../utils";
 
@@ -7,8 +5,14 @@ export const getDataAfterStartDate = <T extends CaseData>(
   dataRows: T[],
   startDate: string
 ) => {
-  const momentStartDate = moment(startDate);
-  return dataRows.filter((data) => moment(data.date).isAfter(momentStartDate));
+  const momentStartDate = new Date(startDate);
+  const rowAfterStartDateIndex = dataRows.findIndex(
+    (data) => new Date(data.date) > momentStartDate
+  );
+
+  return rowAfterStartDateIndex === -1
+    ? []
+    : dataRows.slice(rowAfterStartDateIndex);
 };
 
 export const processCaseDataRows = (caseDataRows: CaseData[]) => {
