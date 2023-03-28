@@ -1,4 +1,4 @@
-import React, { FunctionComponent, createContext, useState } from "react";
+import React, { FunctionComponent, createContext, useState } from 'react';
 
 import {
   US_STATES_CSV_URL,
@@ -6,24 +6,24 @@ import {
   viewModeOptions,
   ViewModeOption,
   US_CSV_URL,
-} from "../constants";
+} from '../constants';
 import {
   useParseCSV,
   useProcessedUSData,
   useProcessedCountyData,
   useProcessedStateData,
-} from "../hooks";
+} from '../hooks';
 import {
   dataIsCountyData,
   dataIsStateData,
   dataIsUSData,
-} from "../hooks/data/utils";
+} from '../hooks/data/utils';
 
 import type {
   ProccessedUSData,
   ProccessedStateData,
   ProccessedCountyData,
-} from "../hooks";
+} from '../hooks';
 
 import type {
   CountyData,
@@ -31,7 +31,7 @@ import type {
   StateData,
   ParseState,
   USData,
-} from "../types";
+} from '../types';
 
 interface CaseDataContext {
   selectedState: Option | null;
@@ -59,7 +59,7 @@ export const CaseDataContext = createContext<CaseDataContext>(
 export const CaseDataProvider: FunctionComponent = ({ children }) => {
   const [selectedState, setSelectedState] = useState<Option | null>(null);
   const [selectedCounty, setSelectedCounty] = useState<Option | null>(null);
-  const [selectedViewMode, setSelectedViewMode] = useState(viewModeOptions[0]);
+  const [selectedViewMode, setSelectedViewMode] = useState(viewModeOptions[1]);
 
   const handleStateSelect = (state: Option) => {
     setSelectedState(state);

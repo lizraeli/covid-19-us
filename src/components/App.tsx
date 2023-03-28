@@ -1,13 +1,13 @@
-import "./App.css";
+import './App.css';
 
-import React, { useContext, useEffect } from "react";
-import Loader from "react-loader-spinner";
+import React, { useContext, useEffect } from 'react';
+import Loader from 'react-loader-spinner';
 
-import { getErrorFromParseStates, isParseStateActive } from "./utils";
-import { CaseDataContext } from "../providers/CaseData";
-import ChartContent from "./Chart";
-import Selects from "./Selects";
-import { ParseStatus } from "../constants";
+import { getErrorFromParseStates, isParseStateActive } from './utils';
+import { CaseDataContext } from '../providers/CaseData';
+import ChartContent from './Chart';
+import Selects from './Selects';
+import { ParseStatus } from '../constants';
 
 function App() {
   const {
@@ -20,6 +20,7 @@ function App() {
   } = useContext(CaseDataContext);
 
   useEffect(() => {
+    // Load US data, then state data, then county data
     if (USDataParseState.status === ParseStatus.UNDEFINED) {
       fetchAndParseUSData();
     } else if (
@@ -62,11 +63,11 @@ function App() {
           <div className="notes">
             This tracker uses data from The New York Times, based on reports
             from state and local health agencies. The data files can be accessed
-            on github at{" "}
+            on github at{' '}
             <a href="https://github.com/nytimes/covid-19-data">
               nytimes/covid-19-data
             </a>
-            . The code that powers this tracker is available on github at{" "}
+            . The code that powers this tracker is available on github at{' '}
             <a href="https://github.com/lizraeli/covid-19-us">
               lizraeli/covid-19-us
             </a>
