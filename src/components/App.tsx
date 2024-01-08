@@ -71,7 +71,8 @@ function App() {
             <a href="https://github.com/lizraeli/covid-19-us">
               lizraeli/covid-19-us
             </a>
-            .
+            . As of March 24, 2013, the New York Times no longer collects COVID
+            data.
           </div>
         </>
       )}

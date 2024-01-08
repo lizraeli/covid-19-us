@@ -1,14 +1,14 @@
-import { useMemo } from "react";
-import groupBy from "lodash/groupBy";
+import { useMemo } from 'react';
+import groupBy from 'lodash/groupBy';
 
-import { ParseStatus, START_DATE } from "../../constants";
-import { createOptionsFromDataDict } from "./utils";
-import { getDataAfterStartDate } from "./worker/calcData";
-import { makeChartData, defaultChartData } from "../../utils/chart";
-import { useAsyncMemo } from "../useAsyncMemo";
-import CalcDataWorker from "./worker";
+import { ParseStatus, START_DATE } from '../../constants';
+import { createOptionsFromDataDict } from './utils';
+import { getDataAfterStartDate } from './worker/calcData';
+import { makeChartData, defaultChartData } from '../../utils/chart';
+import { useAsyncMemo } from '../useAsyncMemo';
+import CalcDataWorker from './worker';
 
-import type { ParseState, Option, StateData } from "../../types";
+import type { ParseState, Option, StateData } from '../../types';
 
 const worker = new CalcDataWorker();
 

@@ -38,7 +38,11 @@ export const viewModeOptions: ViewModeOption[] = [
   },
 ];
 
-export const START_DATE = moment().subtract(90, 'days').format('YYYY-MM-DD');
+// As of March 24, 2023, the NY times data is no longer updated
+// See https://www.nytimes.com/2023/03/22/us/covid-data-cdc.html
+export const END_DATE = moment('March 24, 2023');
+
+export const START_DATE = END_DATE.subtract(90, 'days').format('YYYY-MM-DD');
 
 export const US_CSV_URL =
   'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us.csv';
